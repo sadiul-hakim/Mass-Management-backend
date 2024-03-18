@@ -26,6 +26,12 @@ public class UserRoleController {
         return ResponseEntity.ok(role);
     }
 
+    @GetMapping("/get-by-role/{role}")
+    public ResponseEntity<?> getByName(@PathVariable String role) {
+        var roleModel = userRoleService.getByRole(role);
+        return ResponseEntity.ok(roleModel);
+    }
+
     @GetMapping("/get-all")
     public ResponseEntity<?> getAll() {
         var roleList = userRoleService.getAll();

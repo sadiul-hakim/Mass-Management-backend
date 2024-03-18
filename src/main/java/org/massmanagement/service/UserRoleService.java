@@ -2,6 +2,7 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.massmanagement.dto.RoleDTO;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRoleRepo;
 import org.springframework.stereotype.Service;
@@ -13,19 +14,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserRoleService {
     private final UserRoleRepo userRoleRepo;
-    public UserRole save(UserRole userRole) {
+    public RoleDTO save(UserRole userRole) {
         log.info("Saving user role : {}", userRole);
-        return userRoleRepo.save(userRole);
+        var saved = userRoleRepo.save(userRole);
+        return convertToDTO(saved);
     }
 
-    public UserRole getById(long id) {
+    public RoleDTO getById(long id) {
         log.info("Getting user role by id : {}", id);
-        return userRoleRepo.findById(id).orElse(new UserRole());
+        var role = userRoleRepo.findById(id).orElse(new UserRole());
+        return convertToDTO(role);
     }
 
-    public List<UserRole> getAll() {
+    public RoleDTO getByRole(String role) {
+        log.info("Getting user role by role name : {}", role);
+        var roleModel = userRoleRepo.findByRole(role).orElse(new UserRole());
+        return convertToDTO(roleModel);
+    }
+
+    public List<RoleDTO> getAll() {
         log.info("Getting all user roles.");
-        return userRoleRepo.findAll();
+        var all = userRoleRepo.findAll();
+        return all.stream().map(this::convertToDTO).toList();
     }
 
     public boolean delete(long id) {
@@ -37,5 +47,9 @@ public class UserRoleService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public RoleDTO convertToDTO(UserRole userRole){
+        return new RoleDTO(userRole.getId(), userRole.getRole(),userRole.getDescription());
     }
 }

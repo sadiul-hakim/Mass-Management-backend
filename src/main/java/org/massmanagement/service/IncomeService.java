@@ -2,8 +2,11 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.model.Income;
+import org.massmanagement.model.TransactionType;
 import org.massmanagement.repository.IncomeRepo;
+import org.massmanagement.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,29 +16,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IncomeService {
     private final IncomeRepo incomeRepo;
-    public Income save(Income income) {
+    private final TransactionTypeService transactionTypeService;
+    private final UserRepo userRepo;
+    public IncomeDTO save(Income income) {
         log.info("Saving income : {}", income);
-        return incomeRepo.save(income);
+        return convertToDTO(incomeRepo.save(income));
     }
 
-    public Income getById(long id) {
+    public IncomeDTO getById(long id) {
         log.info("Getting income by id : {}", id);
-        return incomeRepo.findById(id).orElse(new Income());
+        return convertToDTO(incomeRepo.findById(id).orElse(new Income()));
     }
 
-    public List<Income> getAll() {
+    public List<IncomeDTO> getAll() {
         log.info("Getting all incomes.");
-        return incomeRepo.findAll();
+        var all = incomeRepo.findAll();
+        return all.stream().map(this::convertToDTO).toList();
     }
 
-    public List<Income> getAllByType(long type){
+    public List<IncomeDTO> getAllByType(long type){
         log.info("Getting all incomes by type {}.",type);
-        return incomeRepo.findAllByType(type);
+        var all = incomeRepo.findAllByType(type);
+        return all.stream().map(this::convertToDTO).toList();
     }
 
-    public List<Income> getAllByUser(long user){
+    public List<IncomeDTO> getAllByUser(long user){
         log.info("Getting all incomes by user {}.",user);
-        return incomeRepo.findAllByUserId(user);
+        var all = incomeRepo.findAllByUserId(user);
+        return all.stream().map(this::convertToDTO).toList();
     }
 
     public boolean delete(long id) {
@@ -47,5 +55,12 @@ public class IncomeService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public IncomeDTO convertToDTO(Income income){
+        var transactionType = transactionTypeService.getById(income.getType());
+        var user = userRepo.findById(income.getUserId()).orElse(null);
+
+        return new IncomeDTO(income.getId(),transactionType,user,income.getAmount(),income.getDate());
     }
 }

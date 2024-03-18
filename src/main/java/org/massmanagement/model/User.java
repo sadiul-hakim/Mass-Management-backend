@@ -1,9 +1,11 @@
 package org.massmanagement.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.massmanagement.model.deserializer.UserDeserializer;
 
 import java.sql.Timestamp;
 
@@ -11,12 +13,15 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonDeserialize(using = UserDeserializer.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    @Column(unique = true)
     private String phone;
+    private String password;
     private String address;
     @ManyToOne
     private UserRole role;

@@ -26,6 +26,12 @@ public class UserStatusController {
         return ResponseEntity.ok(status);
     }
 
+    @GetMapping("/get/{status}")
+    public ResponseEntity<?> getByStatus(@PathVariable String status) {
+        var statusModel = userStatusService.getByStatus(status);
+        return ResponseEntity.ok(statusModel);
+    }
+
     @GetMapping("/get-all")
     public ResponseEntity<?> getAll() {
         var statusList = userStatusService.getAll();

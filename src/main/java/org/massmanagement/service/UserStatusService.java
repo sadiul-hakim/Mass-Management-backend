@@ -23,6 +23,11 @@ public class UserStatusService {
         return userStatusRepo.findById(id).orElse(new UserStatus());
     }
 
+    public UserStatus getByStatus(String status) {
+        log.info("Getting user status by status name : {}", status);
+        return userStatusRepo.findByStatus(status).orElse(new UserStatus());
+    }
+
     public List<UserStatus> getAll() {
         log.info("Getting all user status.");
         return userStatusRepo.findAll();
