@@ -10,6 +10,7 @@ import org.massmanagement.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -44,6 +45,21 @@ public class IncomeService {
         log.info("Getting all incomes by user {}.",user);
         var all = incomeRepo.findAllByUserId(user);
         return all.stream().map(this::convertToDTO).toList();
+    }
+
+    public long getTotalAmount(){
+        log.info("Getting total amount of income.");
+        return incomeRepo.findSumOfAmount();
+    }
+
+    public Set<Long> countTypes(){
+        log.info("Getting types in income.");
+        return incomeRepo.findCountOfType();
+    }
+
+    public long getSumOfAmountByUserAndType(long user,long type){
+        log.info("Getting sum of amount by user {} and type {}",user,type);
+        return incomeRepo.findSumOfIncomeByUserIdAndType(user,type);
     }
 
     public boolean delete(long id) {

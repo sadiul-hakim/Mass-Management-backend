@@ -48,6 +48,16 @@ public class UserService {
         return all.stream().map(this::convertToDTO).toList();
     }
 
+    public long getTotalUsers(){
+        log.info("Getting total number of user.");
+        return userRepo.findCountOfUser();
+    }
+
+    public List<Long> idList(){
+        log.info("Getting name list of user.");
+        return userRepo.findAllNames();
+    }
+
     @Transactional
     public boolean changeManager(long managerId, long userId) {
         try{

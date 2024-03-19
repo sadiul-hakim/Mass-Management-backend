@@ -38,6 +38,11 @@ public class CostService {
         return allCosts.stream().map(this::convertToDTO).toList();
     }
 
+    public long getTotalAmount(){
+        log.info("Getting total amount of cost.");
+        return costRepo.findSumOfAmount();
+    }
+
     public boolean delete(long id) {
         log.info("Deleting cost by id : {}", id);
         try {
