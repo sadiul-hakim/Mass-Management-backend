@@ -17,5 +17,5 @@ public class UserDTO {
     private String address;
     private RoleDTO role;
     private UserStatus status;
-    private Timestamp joiningDate = new Timestamp(System.currentTimeMillis());
+    private String joiningDate;
 }

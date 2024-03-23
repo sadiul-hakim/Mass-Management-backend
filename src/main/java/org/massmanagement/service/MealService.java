@@ -2,8 +2,10 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.massmanagement.dto.MealDTO;
 import org.massmanagement.model.Meal;
 import org.massmanagement.repository.MealRepo;
+import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,24 +15,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MealService {
     private final MealRepo mealRepo;
-    public Meal save(Meal meal) {
+    private final UserService userService;
+    private final MealTypeService mealTypeService;
+    private final PeriodService periodService;
+    public MealDTO save(Meal meal) {
         log.info("Saving meal : {}", meal);
-        return mealRepo.save(meal);
+        return convertToDTO(mealRepo.save(meal));
     }
 
-    public Meal getById(long id) {
+    public MealDTO getById(long id) {
         log.info("Getting meal by id : {}", id);
-        return mealRepo.findById(id).orElse(new Meal());
+        return convertToDTO(mealRepo.findById(id).orElse(new Meal()));
     }
 
-    public List<Meal> getAll() {
+    public List<MealDTO> getAll() {
         log.info("Getting all meals.");
-        return mealRepo.findAll();
+        var all = mealRepo.findAll();
+        return all.stream().map(this::convertToDTO).toList();
     }
 
-    public List<Meal> getAllByUser(long user) {
+    public List<MealDTO> getAllByUser(long user) {
         log.info("Getting all meals by user {}.", user);
-        return mealRepo.findAllByUserId(user);
+        var all = mealRepo.findAllByUserId(user);
+        return all.stream().map(this::convertToDTO).toList();
     }
 
     public boolean delete(long id) {
@@ -42,5 +49,13 @@ public class MealService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public MealDTO convertToDTO(Meal meal){
+        var user = userService.getById(meal.getUserId());
+        var type = mealTypeService.getById(meal.getType());
+        var period = periodService.getById(meal.getPeriod());
+
+        return new MealDTO(meal.getId(),user,type,meal.getAmount(), DateFormatter.formatDate(meal.getDate()),period);
     }
 }

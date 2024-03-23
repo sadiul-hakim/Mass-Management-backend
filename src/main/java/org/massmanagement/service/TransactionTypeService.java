@@ -24,6 +24,11 @@ public class TransactionTypeService {
         return transactionTypeRepo.findById(id).orElse(new TransactionType());
     }
 
+    public TransactionType getByTitle(String title) {
+        log.info("Getting transaction type by name : {}", title);
+        return transactionTypeRepo.findByTitle(title).orElse(new TransactionType());
+    }
+
     public List<TransactionType> getAll() {
         log.info("Getting all transaction types.");
         return transactionTypeRepo.findAll();

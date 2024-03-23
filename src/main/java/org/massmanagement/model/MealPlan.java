@@ -11,14 +11,12 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Meal {
+public class MealPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long userId;
-    private long type;
-    private int amount;
+    private String item;
+    private long period;
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp date = new Timestamp(System.currentTimeMillis());
-    private long period;
 }

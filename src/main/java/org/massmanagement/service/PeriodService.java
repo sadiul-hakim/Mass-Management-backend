@@ -28,6 +28,11 @@ public class PeriodService {
         return periodRepo.findAll();
     }
 
+    public long count(){
+        log.info("Counting periods.");
+        return periodRepo.count();
+    }
+
     public boolean delete(long id) {
         log.info("Deleting period id : {}", id);
         try {

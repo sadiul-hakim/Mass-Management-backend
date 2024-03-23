@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.User;
+import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
+import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -23,6 +25,9 @@ public class UserService {
 
     public UserDTO save(User user) {
         log.info("Saving user : {}", user);
+        if (user.getRole() == null) {
+            return null;
+        }
         var saved = userRepo.save(user);
         return convertToDTO(saved);
     }
@@ -36,9 +41,9 @@ public class UserService {
     public List<UserDTO> getByRole(long roleId) {
         log.info("Getting users by id : {}", roleId);
         var role = userRoleRepo.findById(roleId).orElse(null);
-        if(role == null) return Collections.emptyList();
+        if (role == null) return Collections.emptyList();
 
-        var users= userRepo.findByRole(role);
+        var users = userRepo.findByRole(role);
         return users.stream().map(this::convertToDTO).toList();
     }
 
@@ -48,30 +53,33 @@ public class UserService {
         return all.stream().map(this::convertToDTO).toList();
     }
 
-    public long getTotalUsers(){
+    public long getTotalUsers(long status) {
         log.info("Getting total number of user.");
-        return userRepo.findCountOfUser();
+        return userRepo.findCountOfActiveUser(status);
     }
 
-    public List<Long> idList(){
+    public List<Long> idList() {
         log.info("Getting name list of user.");
         return userRepo.findAllNames();
     }
 
     @Transactional
     public boolean changeManager(long managerId, long userId) {
-        try{
+        try {
             var user = userRepo.findById(userId);
-            if(user.isEmpty()) return false;
+            if (user.isEmpty()) return false;
 
             var manager = userRepo.findById(managerId);
-            if(manager.isEmpty()) return false;
+            if (manager.isEmpty()) return false;
 
-            manager.get().setRole(user.get().getRole());
-            user.get().setRole(manager.get().getRole());
+            UserRole managerRole = manager.get().getRole();
+            UserRole borderRole = user.get().getRole();
+
+            manager.get().setRole(borderRole);
+            user.get().setRole(managerRole);
 
             return true;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -88,7 +96,7 @@ public class UserService {
     }
 
     public UserDTO convertToDTO(User user) {
-        if (user == null) return null;
+        if (user == null || user.getId() == 0) return null;
 
         var status = userStatusService.getById(user.getStatus());
 
@@ -99,7 +107,7 @@ public class UserService {
                 user.getAddress(),
                 userRoleService.convertToDTO(user.getRole()),
                 status,
-                user.getJoiningDate()
+                DateFormatter.formatDateTime(user.getJoiningDate())
         );
     }
 }

@@ -15,16 +15,23 @@ public class HomeService {
     private final CostService costService;
     private final UserService userService;
     private final TransactionTypeService transactionTypeService;
+    private final UserStatusService userStatusService;
 
     public Map<String, Long> getTotals() {
+
+        var activeStatus = userStatusService.getByStatus("Active");
+        var inactiveStatus = userStatusService.getByStatus("Inactive");
+
         Map<String, Long> totals = new HashMap<>();
         long income = incomeService.getTotalAmount();
         long cost = costService.getTotalAmount();
-        long user = userService.getTotalUsers();
+        long activeUsers = userService.getTotalUsers(activeStatus.getId());
+        long inactiveUsers = userService.getTotalUsers(inactiveStatus.getId());
 
         totals.put("income", income);
         totals.put("cost", cost);
-        totals.put("user", user);
+        totals.put("active_user", activeUsers);
+        totals.put("inactive_user", inactiveUsers);
         return totals;
     }
 

@@ -16,5 +16,5 @@ public class IncomeDTO {
     private TransactionType type;
     private User user;
     private long amount;
-    private Timestamp date;
+    private String date;
 }

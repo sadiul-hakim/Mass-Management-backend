@@ -14,5 +14,5 @@ public class CostDTO {
     private long id;
     private TransactionType type;
     private long amount;
-    private Timestamp date;
+    private String date;
 }

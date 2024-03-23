@@ -7,6 +7,7 @@ import org.massmanagement.model.Income;
 import org.massmanagement.model.TransactionType;
 import org.massmanagement.repository.IncomeRepo;
 import org.massmanagement.repository.UserRepo;
+import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,6 +78,6 @@ public class IncomeService {
         var transactionType = transactionTypeService.getById(income.getType());
         var user = userRepo.findById(income.getUserId()).orElse(null);
 
-        return new IncomeDTO(income.getId(),transactionType,user,income.getAmount(),income.getDate());
+        return new IncomeDTO(income.getId(),transactionType,user,income.getAmount(), DateFormatter.formatDateTime(income.getDate()));
     }
 }

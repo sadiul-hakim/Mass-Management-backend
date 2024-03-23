@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.model.Cost;
 import org.massmanagement.repository.CostRepo;
+import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +38,16 @@ public class CostService {
         var allCosts = costRepo.findAllByType(type);
         return allCosts.stream().map(this::convertToDTO).toList();
     }
+    public List<CostDTO> findByTypeNotIn(List<Long> types) {
+        log.info("Getting all cost where types are not in {}.", types);
+        var allCosts = costRepo.findByTypeNotIn(types);
+        return allCosts.stream().map(this::convertToDTO).toList();
+    }
+
+    public long getSumByType(long type) {
+        log.info("Getting sum of cost by type {}.", type);
+        return costRepo.findSumOfAmountByType(type);
+    }
 
     public long getTotalAmount(){
         log.info("Getting total amount of cost.");
@@ -60,6 +71,6 @@ public class CostService {
         return new CostDTO(cost.getId(),
                 transactionType,
                 cost.getAmount(),
-                cost.getDate());
+                DateFormatter.formatDateTime(cost.getDate()));
     }
 }
