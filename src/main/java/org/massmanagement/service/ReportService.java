@@ -1,4 +1,4 @@
-package org.massmanagement.controller;
+package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class ReportService {
 
         var marketType = transactionTypeService.getByTitle("Market");
         var electricityBillType = transactionTypeService.getByTitle("Electricity Bill");
-        var depositType = transactionTypeService.getByTitle("Border Deposits");
+        var depositType = transactionTypeService.getByTitle("Border Deposit");
 
         report.put("borders", new ArrayList<>());
 

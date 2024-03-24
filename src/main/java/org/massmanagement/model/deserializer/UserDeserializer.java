@@ -18,6 +18,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String PHONE = "phone";
+    private static final String EMAIL = "email";
     private static final String ADDRESS = "address";
     private static final String PASSWORD = "password";
     private static final String ROLE = "role";
@@ -31,6 +32,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
         long id = node.get(ID).asLong();
         String name = node.get(NAME).asText();
         String phone = node.get(PHONE).asText();
+        String email = node.get(EMAIL).asText();
         String address = node.get(ADDRESS).asText();
         String password = node.get(PASSWORD).asText();
 
@@ -42,6 +44,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
         user.setId(id);
         user.setName(name);
         user.setPhone(phone);
+        user.setEmail(email);
         user.setAddress(address);
         user.setPassword(password);
         user.setRole(role);

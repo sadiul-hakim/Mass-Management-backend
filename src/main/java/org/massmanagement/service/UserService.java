@@ -9,6 +9,7 @@ import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
 import org.massmanagement.util.DateFormatter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -22,12 +23,16 @@ public class UserService {
     private final UserRoleRepo userRoleRepo;
     private final UserRoleService userRoleService;
     private final UserStatusService userStatusService;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO save(User user) {
         log.info("Saving user : {}", user);
         if (user.getRole() == null) {
             return null;
         }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         var saved = userRepo.save(user);
         return convertToDTO(saved);
     }
@@ -104,6 +109,7 @@ public class UserService {
                 user.getId(),
                 user.getName(),
                 user.getPhone(),
+                user.getEmail(),
                 user.getAddress(),
                 userRoleService.convertToDTO(user.getRole()),
                 status,

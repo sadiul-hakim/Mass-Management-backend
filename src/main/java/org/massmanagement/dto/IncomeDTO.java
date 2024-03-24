@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class IncomeDTO {
     private long id;
     private TransactionType type;
-    private User user;
+    private UserDTO user;
     private long amount;
     private String date;
 }

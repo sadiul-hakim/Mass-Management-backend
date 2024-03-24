@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<User,Long> {
     List<User> findByRole(UserRole role);
@@ -14,4 +15,5 @@ public interface UserRepo extends JpaRepository<User,Long> {
     long findCountOfActiveUser(@Param("status") long status);
     @Query(value = "select id from USER",nativeQuery = true)
     List<Long> findAllNames();
+    Optional<User> findByEmail(String email);
 }

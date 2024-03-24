@@ -7,6 +7,7 @@ import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRoleRepo;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.util.List;
 
 @Slf4j
@@ -16,6 +17,17 @@ public class UserRoleService {
     private final UserRoleRepo userRoleRepo;
     public RoleDTO save(UserRole userRole) {
         log.info("Saving user role : {}", userRole);
+
+        if(userRole == null || userRole.getRole().isEmpty()){
+            return null;
+        }
+
+        userRole.setRole(userRole.getRole().toUpperCase());
+
+        if(!userRole.getRole().startsWith("ROLE_")){
+            userRole.setRole("ROLE_".concat(userRole.getRole()));
+        }
+
         var saved = userRoleRepo.save(userRole);
         return convertToDTO(saved);
     }
@@ -28,6 +40,15 @@ public class UserRoleService {
 
     public RoleDTO getByRole(String role) {
         log.info("Getting user role by role name : {}", role);
+
+        if(role.isEmpty()) return new RoleDTO();
+
+        role = role.toUpperCase();
+
+        if(!role.startsWith("ROLE_")){
+            role = "ROLE_".concat(role);
+        }
+
         var roleModel = userRoleRepo.findByRole(role).orElse(new UserRole());
         return convertToDTO(roleModel);
     }
@@ -50,6 +71,7 @@ public class UserRoleService {
     }
 
     public RoleDTO convertToDTO(UserRole userRole){
-        return new RoleDTO(userRole.getId(), userRole.getRole(),userRole.getDescription());
+        if(userRole == null) return new RoleDTO();
+        return new RoleDTO(userRole.getId(), userRole.getRole().replace("ROLE_",""),userRole.getDescription());
     }
 }

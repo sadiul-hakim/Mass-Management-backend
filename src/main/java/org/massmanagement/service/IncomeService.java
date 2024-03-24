@@ -19,7 +19,7 @@ import java.util.Set;
 public class IncomeService {
     private final IncomeRepo incomeRepo;
     private final TransactionTypeService transactionTypeService;
-    private final UserRepo userRepo;
+    private final UserService userService;
     public IncomeDTO save(Income income) {
         log.info("Saving income : {}", income);
         return convertToDTO(incomeRepo.save(income));
@@ -49,8 +49,13 @@ public class IncomeService {
     }
 
     public long getTotalAmount(){
-        log.info("Getting total amount of income.");
-        return incomeRepo.findSumOfAmount();
+        try{
+            log.info("Getting total amount of income.");
+            return incomeRepo.findSumOfAmount();
+        }catch (Exception ex){
+            log.error("Error occurred in getTotalAmount() : cause {}",ex.getMessage());
+            return 0L;
+        }
     }
 
     public Set<Long> countTypes(){
@@ -76,7 +81,7 @@ public class IncomeService {
 
     public IncomeDTO convertToDTO(Income income){
         var transactionType = transactionTypeService.getById(income.getType());
-        var user = userRepo.findById(income.getUserId()).orElse(null);
+        var user = userService.getById(income.getUserId());
 
         return new IncomeDTO(income.getId(),transactionType,user,income.getAmount(), DateFormatter.formatDateTime(income.getDate()));
     }

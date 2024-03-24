@@ -45,13 +45,23 @@ public class CostService {
     }
 
     public long getSumByType(long type) {
+        try{
         log.info("Getting sum of cost by type {}.", type);
         return costRepo.findSumOfAmountByType(type);
+        }catch (Exception e){
+            log.error("Error occurred in getSumByType(): cause {}",e.getMessage());
+            return 0L;
+        }
     }
 
     public long getTotalAmount(){
-        log.info("Getting total amount of cost.");
-        return costRepo.findSumOfAmount();
+        try{
+            log.info("Getting total amount of cost.");
+            return costRepo.findSumOfAmount();
+        }catch (Exception e){
+            log.error("Error occurred in getTotalAmount(): cause {}",e.getMessage());
+            return 0L;
+        }
     }
 
     public boolean delete(long id) {
