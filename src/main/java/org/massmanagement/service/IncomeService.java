@@ -79,6 +79,17 @@ public class IncomeService {
         }
     }
 
+    public boolean deleteAll(){
+        log.info("Deleting all incomes.");
+        try{
+            incomeRepo.deleteAll();
+            return true;
+        }catch (Exception ex){
+            log.error("Could not delete incomes. Cause {}",ex.getMessage());
+            return false;
+        }
+    }
+
     public IncomeDTO convertToDTO(Income income){
         var transactionType = transactionTypeService.getById(income.getType());
         var user = userService.getById(income.getUserId());

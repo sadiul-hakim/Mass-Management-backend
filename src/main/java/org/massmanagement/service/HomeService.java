@@ -3,6 +3,7 @@ package org.massmanagement.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.UserDTO;
+import org.massmanagement.projection.UserProjection;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,15 +40,16 @@ public class HomeService {
 
         List<Map<String, Object>> borderInfo = new ArrayList<>();
 
-        List<UserDTO> userIds = userService.getAll();
+        List<UserProjection> userIds = userService.getAllProjected();
         Set<Long> types = incomeService.countTypes();
 
-        for (UserDTO user : userIds) {
+        for (UserProjection user : userIds) {
             Map<String, Object> info = new HashMap<>();
+            info.put("name",user.getName());
+
             for (long type : types) {
                 var transactionType = transactionTypeService.getById(type);
                 long sum = incomeService.getSumOfAmountByUserAndType(user.getId(),type);
-                info.put("name",user.getName());
                 info.put(transactionType.getTitle(),sum);
             }
 

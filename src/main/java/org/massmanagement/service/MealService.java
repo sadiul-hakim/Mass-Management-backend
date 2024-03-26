@@ -51,6 +51,17 @@ public class MealService {
         }
     }
 
+    public boolean deleteAll(){
+        log.info("Deleting all meals.");
+        try{
+            mealRepo.deleteAll();
+            return true;
+        }catch (Exception ex){
+            log.error("Could not delete meals. Cause {}",ex.getMessage());
+            return false;
+        }
+    }
+
     public MealDTO convertToDTO(Meal meal){
         var user = userService.getById(meal.getUserId());
         var type = mealTypeService.getById(meal.getType());

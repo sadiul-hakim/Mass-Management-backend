@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.User;
 import org.massmanagement.model.UserRole;
+import org.massmanagement.projection.UserProjection;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
 import org.massmanagement.util.DateFormatter;
@@ -56,6 +57,11 @@ public class UserService {
         log.info("Getting all users.");
         var all = userRepo.findAll();
         return all.stream().map(this::convertToDTO).toList();
+    }
+
+    public List<UserProjection> getAllProjected() {
+        log.info("Getting all users projection.");
+        return userRepo.findUserProjectedBy();
     }
 
     public long getTotalUsers(long status) {

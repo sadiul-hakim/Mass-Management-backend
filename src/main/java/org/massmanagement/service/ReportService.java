@@ -6,7 +6,6 @@ import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.MealDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.TransactionType;
-import org.massmanagement.service.*;
 import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +59,7 @@ public class ReportService {
 
         double otherCosts = 0.0;
         for (CostDTO cost : otherCostsObj) {
-            otherCosts += cost.getAmount();
+            otherCosts += cost.amount();
         }
         report.put("other_cost", format(otherCosts, "0.00"));
 
@@ -72,22 +71,22 @@ public class ReportService {
             Map<String, Object> userInfo = new HashMap<>();
 
             Map<String, Object> userData = new HashMap<>();
-            userData.put("name", user.getName());
-            userData.put("id", user.getId());
+            userData.put("name", user.name());
+            userData.put("id", user.id());
 
             userInfo.put("border", userData);
 
             long meals;
-            if (user.getStatus().getStatus().equalsIgnoreCase("Active")) {
+            if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 meals = singleUserMeals();
-                meals = removeOffAndAddExtras(meals, user.getId());
+                meals = removeOffAndAddExtras(meals, user.id());
             } else {
                 meals = 0;
             }
             userInfo.put("meals", meals);
 
             double mealCost;
-            if (user.getStatus().getStatus().equalsIgnoreCase("Active")) {
+            if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 mealCost = meals * mealRate;
             } else {
                 mealCost = 0.0;
@@ -100,7 +99,7 @@ public class ReportService {
             mealCost += singleBorderOtherCost;
             userInfo.put("total_cost", format(mealCost, "0.00"));
 
-            long deposit = incomeService.getSumOfAmountByUserAndType(user.getId(), depositType.getId());
+            long deposit = incomeService.getSumOfAmountByUserAndType(user.id(), depositType.getId());
             userInfo.put("deposit", deposit);
 
             var balance = deposit - mealCost;

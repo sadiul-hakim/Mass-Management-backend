@@ -7,7 +7,6 @@ import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRoleRepo;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
 import java.util.List;
 
 @Slf4j

@@ -38,6 +38,7 @@ public class CostService {
         var allCosts = costRepo.findAllByType(type);
         return allCosts.stream().map(this::convertToDTO).toList();
     }
+
     public List<CostDTO> findByTypeNotIn(List<Long> types) {
         log.info("Getting all cost where types are not in {}.", types);
         var allCosts = costRepo.findByTypeNotIn(types);
@@ -45,21 +46,21 @@ public class CostService {
     }
 
     public long getSumByType(long type) {
-        try{
-        log.info("Getting sum of cost by type {}.", type);
-        return costRepo.findSumOfAmountByType(type);
-        }catch (Exception e){
-            log.error("Error occurred in getSumByType(): cause {}",e.getMessage());
+        try {
+            log.info("Getting sum of cost by type {}.", type);
+            return costRepo.findSumOfAmountByType(type);
+        } catch (Exception e) {
+            log.error("Error occurred in getSumByType(): cause {}", e.getMessage());
             return 0L;
         }
     }
 
-    public long getTotalAmount(){
-        try{
+    public long getTotalAmount() {
+        try {
             log.info("Getting total amount of cost.");
             return costRepo.findSumOfAmount();
-        }catch (Exception e){
-            log.error("Error occurred in getTotalAmount(): cause {}",e.getMessage());
+        } catch (Exception e) {
+            log.error("Error occurred in getTotalAmount(): cause {}", e.getMessage());
             return 0L;
         }
     }
@@ -71,6 +72,17 @@ public class CostService {
             log.info("cost {} deleted successfully.", id);
             return true;
         } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public boolean deleteAll() {
+        log.info("Deleting all costs.");
+        try {
+            costRepo.deleteAll();
+            return true;
+        } catch (Exception ex) {
+            log.error("Could not delete costs. Cause {}", ex.getMessage());
             return false;
         }
     }

@@ -1,20 +1,8 @@
 package org.massmanagement.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.massmanagement.model.TransactionType;
-import org.massmanagement.model.User;
 
-import java.sql.Timestamp;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class IncomeDTO {
-    private long id;
-    private TransactionType type;
-    private UserDTO user;
-    private long amount;
-    private String date;
+public record IncomeDTO(long id, TransactionType type,
+                        UserDTO user, long amount, String date) {
 }

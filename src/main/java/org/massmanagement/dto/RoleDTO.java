@@ -1,14 +1,7 @@
 package org.massmanagement.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class RoleDTO {
-    private long id;
-    private String role;
-    private String description;
+public record RoleDTO(long id, String role, String description) {
+    public RoleDTO(){
+        this(0,"","");
+    }
 }
