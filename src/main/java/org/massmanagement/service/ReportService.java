@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.MealDTO;
 import org.massmanagement.dto.UserDTO;
-import org.massmanagement.model.TransactionType;
+import org.massmanagement.model.Setting;
 import org.massmanagement.util.DateFormatter;
+import org.massmanagement.util.SettingParameter;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -19,43 +20,44 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ReportService {
     private final CostService costService;
-    private final TransactionTypeService transactionTypeService;
     private final PeriodService periodService;
     private final MealService mealService;
     private final UserService userService;
-    private final UserStatusService userStatusService;
     private final IncomeService incomeService;
+    private final SettingService settingService;
 
     public Map<String, Object> generateReport() {
         log.info("Generating report.");
 
+        Setting setting = settingService.getByName("setting");
+        if (settingService.isInvalid(setting)) {
+            log.info("Setting is not configured properly!");
+            return Collections.emptyMap();
+        }
+
         Map<String, Object> report = new HashMap<>();
 
-        var mealRate = calculateMealRate(report);
+        var mealRate = calculateMealRate(report, setting);
         report.put("mealRate", mealRate);
 
         long income = incomeService.getTotalAmount();
         long cost = costService.getTotalAmount();
-        report.put("total_income",income);
-        report.put("total_cost",cost);
+        report.put("total_income", income);
+        report.put("total_cost", cost);
 
         var users = userService.getAll();
-        if(users.isEmpty()) return Collections.emptyMap();
+        if (users.isEmpty()) return Collections.emptyMap();
 
-        loadUserInfo(mealRate, report,users);
+        loadUserInfo(mealRate, report, users, setting);
 
         return report;
     }
 
-    private void loadUserInfo(double mealRate, Map<String, Object> report,List<UserDTO> users) {
-
-        var marketType = transactionTypeService.getByTitle("Market");
-        var electricityBillType = transactionTypeService.getByTitle("Electricity Bill");
-        var depositType = transactionTypeService.getByTitle("Border Deposit");
+    private void loadUserInfo(double mealRate, Map<String, Object> report, List<UserDTO> users, Setting setting) {
 
         report.put("borders", new ArrayList<>());
 
-        var otherCostsObj = costService.findByTypeNotIn(List.of(marketType.getId(), electricityBillType.getId()));
+        var otherCostsObj = costService.findByTypeNotIn(setting.getExcludeTransactionTypes());
 
         double otherCosts = 0.0;
         for (CostDTO cost : otherCostsObj) {
@@ -79,7 +81,7 @@ public class ReportService {
             long meals;
             if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 meals = singleUserMeals();
-                meals = removeOffAndAddExtras(meals, user.id());
+                meals = removeOffAndAddExtras(meals, user.id(), setting);
             } else {
                 meals = 0;
             }
@@ -99,7 +101,7 @@ public class ReportService {
             mealCost += singleBorderOtherCost;
             userInfo.put("total_cost", format(mealCost, "0.00"));
 
-            long deposit = incomeService.getSumOfAmountByUserAndType(user.id(), depositType.getId());
+            long deposit = incomeService.getSumOfAmountByUserAndType(user.id(), setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
             userInfo.put("deposit", deposit);
 
             var balance = deposit - mealCost;
@@ -111,27 +113,27 @@ public class ReportService {
         }
     }
 
-    private double calculateMealRate(Map<String, Object> report) {
-        TransactionType marketType = transactionTypeService.getByTitle("Market");
-        if (marketType == null || marketType.getId() == 0) return 0.0;
+    private double calculateMealRate(Map<String, Object> report, Setting setting) {
 
-        long totalMarketCost = costService.getSumByType(marketType.getId());
-        long totalMeals = calculateTotalMeals(report);
+        long marketTypeId = setting.getProperty(SettingParameter.TRANSACTION_TYPE_MARKET);
+        if (marketTypeId == 0) return 0.0;
+
+        long totalMarketCost = costService.getSumByType(marketTypeId);
+        long totalMeals = calculateTotalMeals(report, setting);
 
         double mealRate = totalMarketCost / Double.parseDouble(String.valueOf(totalMeals));
         return format(mealRate, "0.00");
     }
 
-    private long calculateTotalMeals(Map<String, Object> report) {
+    private long calculateTotalMeals(Map<String, Object> report, Setting setting) {
 
         long singlePersonMeals = singleUserMeals();
 
-        var activeStatus = userStatusService.getByStatus("Active");
-        long totalUsers = userService.getTotalUsers(activeStatus.getId());
-        report.put("total_borders",totalUsers);
+        long totalUsers = userService.countByStatus(setting.getProperty(SettingParameter.USER_STATUS_ACTIVE));
+        report.put("total_borders", totalUsers);
 
         var totalMeals = singlePersonMeals * totalUsers;
-        totalMeals =  removeOffAndAddExtras(totalMeals, 0);
+        totalMeals = removeOffAndAddExtras(totalMeals, 0, setting);
         report.put("total_meals", totalMeals);
         return totalMeals;
     }
@@ -149,7 +151,8 @@ public class ReportService {
         return until.getDays();
     }
 
-    private long removeOffAndAddExtras(long singlePersonMeals, long user) {
+    private long removeOffAndAddExtras(long singlePersonMeals, long user, Setting setting) {
+
 
         List<MealDTO> mealList;
         if (user == 0) {
@@ -159,9 +162,9 @@ public class ReportService {
         }
 
         for (MealDTO meal : mealList) {
-            if (meal.type().getName().equalsIgnoreCase("off")) {
+            if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
                 singlePersonMeals -= meal.amount();
-            } else if (meal.type().getName().equalsIgnoreCase("extra")) {
+            } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {
                 singlePersonMeals += meal.amount();
             }
         }

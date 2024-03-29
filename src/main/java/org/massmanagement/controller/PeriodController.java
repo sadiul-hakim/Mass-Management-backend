@@ -36,6 +36,7 @@ public class PeriodController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = periodService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Period deleted successfully.")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete period."));
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error",
+                        "Could not delete period. Make sure period is not in use."));
     }
 }

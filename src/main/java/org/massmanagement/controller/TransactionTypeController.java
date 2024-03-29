@@ -37,6 +37,7 @@ public class TransactionTypeController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = transactionTypeService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Type deleted successfully.")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete type."));
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error",
+                        "Could not delete type. Make sure type is not in use."));
     }
 }

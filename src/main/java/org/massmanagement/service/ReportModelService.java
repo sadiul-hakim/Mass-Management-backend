@@ -13,6 +13,7 @@ import org.massmanagement.repository.ReportRepo;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,27 @@ public class ReportModelService {
         } catch (Exception ex) {
             log.error("Could not save and clean. Cause {}", ex.getMessage());
             return false;
+        }
+    }
+
+    public boolean delete(long id){
+        log.info("Deleting report by id {}.",id);
+        try{
+            reportRepo.deleteById(id);
+            return true;
+        } catch (Exception ex) {
+            log.error("Could not delete report. Cause {}", ex.getMessage());
+            return false;
+        }
+    }
+
+    public List<ReportModel> getAll(){
+        log.info("Get all reports.");
+        try{
+            return reportRepo.findAll();
+        } catch (Exception ex) {
+            log.error("Could not get all report. Cause {}", ex.getMessage());
+            return Collections.emptyList();
         }
     }
 

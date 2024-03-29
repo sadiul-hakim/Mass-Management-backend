@@ -3,6 +3,7 @@ package org.massmanagement.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.UserStatus;
+import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserStatusRepo;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserStatusService {
     private final UserStatusRepo userStatusRepo;
+    private final UserRepo userRepo;
     public UserStatus save(UserStatus userStatus) {
         log.info("Saving user role : {}", userStatus);
         return userStatusRepo.save(userStatus);
@@ -36,6 +38,12 @@ public class UserStatusService {
     public boolean delete(long id) {
         log.info("Deleting user status by id : {}", id);
         try {
+
+            if(!userRepo.findAllByStatus(id).isEmpty()){
+                log.warn("User Status is in use!");
+                return false;
+            }
+
             userStatusRepo.deleteById(id);
             log.info("User status {} deleted by successfully.", id);
             return true;

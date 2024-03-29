@@ -23,6 +23,19 @@ public class ReportModelController {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not save or clean up database."));
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id){
+        var deleted = reportModelService.delete(id);
+        return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Successfully deleted report.")) :
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete report."));
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAll(){
+        var all = reportModelService.getAll();
+        return ResponseEntity.ok(all);
+    }
+
     @GetMapping("/export-pdf")
     public void exportInPdfForm(HttpServletResponse httpResponse){
 

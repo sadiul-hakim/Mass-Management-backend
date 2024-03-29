@@ -3,6 +3,7 @@ package org.massmanagement.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.MealType;
+import org.massmanagement.repository.MealRepo;
 import org.massmanagement.repository.MealTypeRepo;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MealTypeService {
     private final MealTypeRepo mealTypeRepo;
+    private final MealRepo mealRepo;
 
     public MealType save(MealType mealType) {
         log.info("Saving Meal Type : {}", mealType);
@@ -32,6 +34,12 @@ public class MealTypeService {
     public boolean delete(long id) {
         log.info("Deleting meal type id : {}", id);
         try {
+
+            if(!mealRepo.findAllByType(id).isEmpty()){
+                log.warn("Meal Type is in use!");
+                return false;
+            }
+
             mealTypeRepo.deleteById(id);
             log.info("Meal type {} deleted successfully.", id);
             return true;

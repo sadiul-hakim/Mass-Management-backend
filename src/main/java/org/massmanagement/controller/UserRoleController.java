@@ -42,6 +42,7 @@ public class UserRoleController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = userRoleService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "User Role deleted successfully.")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete role."));
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error",
+                        "Could not delete role. Make sure role is not in use."));
     }
 }

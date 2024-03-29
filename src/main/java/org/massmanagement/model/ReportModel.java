@@ -21,7 +21,4 @@ public class ReportModel {
     @Convert(converter = ReportConverter.class)
     @Column(columnDefinition = "JSON")
     private Map<String, Object> report;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp date;
 }

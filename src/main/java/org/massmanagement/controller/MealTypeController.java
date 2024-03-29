@@ -36,6 +36,7 @@ public class MealTypeController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = mealTypeService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Meal Type deleted successfully.")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete meal type."));
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error",
+                        "Could not delete meal type. Make sure type is not in use."));
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.RoleDTO;
 import org.massmanagement.model.UserRole;
+import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +15,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserRoleService {
     private final UserRoleRepo userRoleRepo;
+    private final UserRepo userRepo;
+
     public RoleDTO save(UserRole userRole) {
         log.info("Saving user role : {}", userRole);
 
-        if(userRole == null || userRole.getRole().isEmpty()){
+        if (userRole == null || userRole.getRole().isEmpty()) {
             return null;
         }
 
         userRole.setRole(userRole.getRole().toUpperCase());
 
-        if(!userRole.getRole().startsWith("ROLE_")){
+        if (!userRole.getRole().startsWith("ROLE_")) {
             userRole.setRole("ROLE_".concat(userRole.getRole()));
         }
 
@@ -40,11 +43,11 @@ public class UserRoleService {
     public RoleDTO getByRole(String role) {
         log.info("Getting user role by role name : {}", role);
 
-        if(role.isEmpty()) return new RoleDTO();
+        if (role.isEmpty()) return new RoleDTO();
 
         role = role.toUpperCase();
 
-        if(!role.startsWith("ROLE_")){
+        if (!role.startsWith("ROLE_")) {
             role = "ROLE_".concat(role);
         }
 
@@ -61,6 +64,14 @@ public class UserRoleService {
     public boolean delete(long id) {
         log.info("Deleting user role by id : {}", id);
         try {
+
+            var role = userRoleRepo.findById(id).orElse(null);
+
+            if (!userRepo.findAllByRole(role).isEmpty()) {
+                log.warn("User Role is in use!");
+                return false;
+            }
+
             userRoleRepo.deleteById(id);
             log.info("User role {} deleted successfully.", id);
             return true;
@@ -69,8 +80,8 @@ public class UserRoleService {
         }
     }
 
-    public RoleDTO convertToDTO(UserRole userRole){
-        if(userRole == null) return new RoleDTO();
-        return new RoleDTO(userRole.getId(), userRole.getRole().replace("ROLE_",""),userRole.getDescription());
+    public RoleDTO convertToDTO(UserRole userRole) {
+        if (userRole == null) return new RoleDTO();
+        return new RoleDTO(userRole.getId(), userRole.getRole().replace("ROLE_", ""), userRole.getDescription());
     }
 }

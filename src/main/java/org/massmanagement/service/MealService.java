@@ -40,6 +40,12 @@ public class MealService {
         return all.stream().map(this::convertToDTO).toList();
     }
 
+    public List<MealDTO> getAllByType(long type) {
+        log.info("Getting all meals by type {}.", type);
+        var all = mealRepo.findAllByType(type);
+        return all.stream().map(this::convertToDTO).toList();
+    }
+
     public boolean delete(long id) {
         log.info("Deleting meal by id : {}", id);
         try {

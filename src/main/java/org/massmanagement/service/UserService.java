@@ -64,9 +64,23 @@ public class UserService {
         return userRepo.findUserProjectedBy();
     }
 
-    public long getTotalUsers(long status) {
+    public long countByStatus(long status) {
         log.info("Getting total number of user.");
         return userRepo.findCountOfActiveUser(status);
+    }
+
+    public List<User> getAllByRole(long role) {
+        log.info("Getting total number of user by role.");
+
+        var userRole = userRoleRepo.findById(role).orElse(null);
+        if(userRole == null) return Collections.emptyList();
+
+        return userRepo.findAllByRole(userRole);
+    }
+
+    public List<User> getAllByStatus(long status) {
+        log.info("Getting total number of user by status.");
+        return userRepo.findAllByStatus(status);
     }
 
     public List<Long> idList() {

@@ -2,7 +2,6 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.massmanagement.dto.UserDTO;
 import org.massmanagement.projection.UserProjection;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,8 @@ public class HomeService {
         Map<String, Long> totals = new HashMap<>();
         long income = incomeService.getTotalAmount();
         long cost = costService.getTotalAmount();
-        long activeUsers = userService.getTotalUsers(activeStatus.getId());
-        long inactiveUsers = userService.getTotalUsers(inactiveStatus.getId());
+        long activeUsers = userService.countByStatus(activeStatus.getId());
+        long inactiveUsers = userService.countByStatus(inactiveStatus.getId());
 
         totals.put("income", income);
         totals.put("cost", cost);

@@ -42,6 +42,7 @@ public class UserStatusController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = userStatusService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "User Status deleted successfully.")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete status."));
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error",
+                        "Could not delete status. Make sure status is not in use."));
     }
 }

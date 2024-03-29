@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MealRepo extends JpaRepository<Meal,Long> {
     List<Meal> findAllByUserId(long userId);
+    List<Meal> findAllByType(long type);
+    List<Meal> findAllByPeriod(long period);
 }
