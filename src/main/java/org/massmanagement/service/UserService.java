@@ -4,12 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.UserDTO;
+import org.massmanagement.model.Setting;
 import org.massmanagement.model.User;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.projection.UserProjection;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
 import org.massmanagement.util.DateFormatter;
+import org.massmanagement.util.SettingParameter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class UserService {
     private final UserRoleService userRoleService;
     private final UserStatusService userStatusService;
     private final PasswordEncoder passwordEncoder;
+    private final SettingService settingService;
 
     public UserDTO save(User user) {
         log.info("Saving user : {}", user);
@@ -93,6 +96,12 @@ public class UserService {
         try {
             var user = userRepo.findById(userId);
             if (user.isEmpty()) return false;
+
+            Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
+            long activeUser = setting.getProperty(SettingParameter.USER_STATUS_ACTIVE);
+            if(user.get().getStatus() != activeUser){
+                throw new RuntimeException("The user you are trying to make Manager is Inactive.");
+            }
 
             var manager = userRepo.findById(managerId);
             if (manager.isEmpty()) return false;

@@ -29,7 +29,7 @@ public class ReportService {
     public Map<String, Object> generateReport() {
         log.info("Generating report.");
 
-        Setting setting = settingService.getByName("setting");
+        Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
         if (settingService.isInvalid(setting)) {
             log.info("Setting is not configured properly!");
             return Collections.emptyMap();
