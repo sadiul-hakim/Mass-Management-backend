@@ -10,7 +10,6 @@ import org.massmanagement.repository.MealRepo;
 import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -102,16 +101,31 @@ public class MealService {
         endDate = endDate.plusDays(1);
 
         List<Meal> meals = new ArrayList<>();
-        List<Period> periods = periodService.getAll();
-        for (Period period : periods) {
+        if (mealInRange.getPeriod() == 0) {
+            List<Period> periods = periodService.getAll();
+            for (Period period : periods) {
 
-            LocalDateTime startDateCopy = startDate;
-            while (startDateCopy.isBefore(endDate)) {
-                Meal meal = new Meal(0, mealInRange.getUserId(), mealInRange.getType(),
-                        mealInRange.getAmount(), Timestamp.valueOf(startDateCopy), period.getId());
-                meals.add(meal);
-                startDateCopy = startDateCopy.plusDays(1);
+                List<Meal> mealList = generateMealByPeriod(period, startDate, mealInRange, endDate);
+                meals.addAll(mealList);
             }
+        } else {
+            Period period = periodService.getById(mealInRange.getPeriod());
+            List<Meal> mealList = generateMealByPeriod(period, startDate, mealInRange, endDate);
+            meals.addAll(mealList);
+        }
+
+        return meals;
+    }
+
+    private List<Meal> generateMealByPeriod(Period period, LocalDateTime startDate, MealInRange mealInRange, LocalDateTime endDate) {
+        List<Meal> meals = new ArrayList<>();
+
+        LocalDateTime startDateCopy = startDate;
+        while (startDateCopy.isBefore(endDate)) {
+            Meal meal = new Meal(0, mealInRange.getUserId(), mealInRange.getType(),
+                    mealInRange.getAmount(), Timestamp.valueOf(startDateCopy), period.getId());
+            meals.add(meal);
+            startDateCopy = startDateCopy.plusDays(1);
         }
 
         return meals;
