@@ -1,6 +1,7 @@
 package org.massmanagement.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.massmanagement.dto.UserUpdateDTO;
 import org.massmanagement.model.User;
 import org.massmanagement.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,19 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody User user) {
         var saved = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody UserUpdateDTO user) {
+        var saved = userService.update(user);
+
+        return saved ? ResponseEntity.ok(Collections.singletonMap("message", "User is updated successfully!")) :
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Could not update user!"));
     }
 
     @GetMapping("/get/{id}")
@@ -39,8 +49,8 @@ public class UserController {
     }
 
     @GetMapping("/change-manager")
-    public ResponseEntity<?> assignRole(@RequestParam long managerId,@RequestParam long userId){
-        boolean assigned = userService.changeManager(managerId,userId);
+    public ResponseEntity<?> assignRole(@RequestParam long managerId, @RequestParam long userId) {
+        boolean assigned = userService.changeManager(managerId, userId);
         return assigned ? ResponseEntity.ok(Collections.singletonMap("message", STR."User \{userId} is assigned to role manager successfully.")) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not assign role manager."));
     }

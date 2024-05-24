@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.UserDTO;
+import org.massmanagement.dto.UserUpdateDTO;
 import org.massmanagement.model.Setting;
 import org.massmanagement.model.User;
 import org.massmanagement.model.UserRole;
@@ -47,10 +48,43 @@ public class UserService {
         return convertToDTO(saved);
     }
 
+    public boolean update(UserUpdateDTO user) {
+        log.info("Updating user : {}", user);
+
+        User model = getModelById(user.id());
+        if (model == null) {
+            log.warn("User not found with id: {}", user.id());
+            return false;
+        }
+
+        if (!user.name().isEmpty()) {
+            model.setName(user.name());
+        }
+        if (!user.email().isEmpty()) {
+            model.setEmail(user.email());
+        }
+        if (!user.phone().isEmpty()) {
+            model.setPhone(user.phone());
+        }
+        if (!user.address().isEmpty()) {
+            model.setAddress(user.address());
+        }
+        if (user.status() != 0) {
+            model.setStatus(user.status());
+        }
+        save(model);
+        return true;
+    }
+
     public UserDTO getById(long id) {
         log.info("Getting user by id : {}", id);
         var role = userRepo.findById(id).orElse(new User());
         return convertToDTO(role);
+    }
+
+    public User getModelById(long id) {
+        log.info("Getting user by id : {}", id);
+        return userRepo.findById(id).orElse(new User());
     }
 
     public List<UserDTO> getByRole(long roleId) {
