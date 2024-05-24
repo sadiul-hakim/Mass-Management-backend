@@ -16,8 +16,15 @@ import java.util.List;
 public class MealPlanService {
     private final MealPlanRepo mealPlanRepo;
     private final PeriodService periodService;
+
     public MealPlanDTO save(MealPlan meal) {
         log.info("Saving meal : {}", meal);
+
+        if (meal.getItem().isEmpty() || meal.getPeriod() == 0) {
+            log.warn("Trying to save invalid meal plan!");
+            log.info(meal.getItem());
+            return null;
+        }
         return convertToDTO(mealPlanRepo.save(meal));
     }
 
@@ -43,8 +50,8 @@ public class MealPlanService {
         }
     }
 
-    public MealPlanDTO convertToDTO(MealPlan mealPlan){
+    public MealPlanDTO convertToDTO(MealPlan mealPlan) {
         var period = periodService.getById(mealPlan.getPeriod());
-        return new MealPlanDTO(mealPlan.getId(), mealPlan.getItem(),period, DateFormatter.formatDate(mealPlan.getDate()));
+        return new MealPlanDTO(mealPlan.getId(), mealPlan.getItem(), period, DateFormatter.formatDate(mealPlan.getDate()));
     }
 }

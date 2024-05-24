@@ -20,6 +20,12 @@ public class TransactionTypeService {
 
     public TransactionType save(TransactionType transactionType) {
         log.info("Saving Transaction Type : {}", transactionType);
+
+        if (transactionType.getTitle().isEmpty()) {
+            log.warn("Invalid type!");
+            log.info(transactionType.toString());
+            return null;
+        }
         return transactionTypeRepo.save(transactionType);
     }
 
@@ -42,7 +48,7 @@ public class TransactionTypeService {
         log.info("Deleting transaction type id : {}", id);
         try {
 
-            if(!(incomeRepo.findAllByType(id).isEmpty() && costRepo.findAllByType(id).isEmpty())){
+            if (!(incomeRepo.findAllByType(id).isEmpty() && costRepo.findAllByType(id).isEmpty())) {
                 log.warn("Transaction type is in use!");
                 return false;
             }

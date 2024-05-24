@@ -45,6 +45,12 @@ public class ReportService {
         report.put("total_income", income);
         report.put("total_cost", cost);
 
+        long market = costService.getSumByType(setting.getProperty(SettingParameter.TRANSACTION_TYPE_MARKET));
+        report.put("market", market);
+
+        long deposit = incomeService.getSumByType(setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
+        report.put("deposit", deposit);
+
         var users = userService.getAll();
         if (users.isEmpty()) return Collections.emptyMap();
 
@@ -63,7 +69,7 @@ public class ReportService {
         for (CostDTO cost : otherCostsObj) {
             otherCosts += cost.amount();
         }
-        report.put("other_cost", format(otherCosts, "0.00"));
+        report.put("extra_cost", format(otherCosts, "0.00"));
 
         var date = LocalDate.now();
         report.put("date", DateFormatter.formatDate(date));
@@ -96,7 +102,7 @@ public class ReportService {
             userInfo.put("meal_cost", format(mealCost, "0.00"));
 
             double singleBorderOtherCost = (otherCosts / users.size());
-            userInfo.put("other_cost", format(singleBorderOtherCost, "0.00"));
+            userInfo.put("extra_cost", format(singleBorderOtherCost, "0.00"));
 
             mealCost += singleBorderOtherCost;
             userInfo.put("total_cost", format(mealCost, "0.00"));

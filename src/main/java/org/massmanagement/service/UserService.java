@@ -3,6 +3,7 @@ package org.massmanagement.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.Setting;
 import org.massmanagement.model.User;
@@ -31,7 +32,12 @@ public class UserService {
 
     public UserDTO save(User user) {
         log.info("Saving user : {}", user);
-        if (user.getRole() == null) {
+
+        // User Validation
+        if (user.getRole() == null || user.getName().isEmpty() ||
+                user.getPhone().isEmpty() || user.getEmail().isEmpty()
+                || user.getPassword().isEmpty() || user.getStatus() == 0) {
+            log.warn("Invalid user {}", user);
             return null;
         }
 
@@ -72,11 +78,17 @@ public class UserService {
         return userRepo.findCountOfActiveUser(status);
     }
 
+    public List<UserDTO> findByStatusNotIn(List<Long> types) {
+        log.info("Getting all cost where types are not in {}.", types);
+        var allUsers = userRepo.findAllByStatusNotIn(types);
+        return allUsers.stream().map(this::convertToDTO).toList();
+    }
+
     public List<User> getAllByRole(long role) {
         log.info("Getting total number of user by role.");
 
         var userRole = userRoleRepo.findById(role).orElse(null);
-        if(userRole == null) return Collections.emptyList();
+        if (userRole == null) return Collections.emptyList();
 
         return userRepo.findAllByRole(userRole);
     }
@@ -99,7 +111,7 @@ public class UserService {
 
             Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
             long activeUser = setting.getProperty(SettingParameter.USER_STATUS_ACTIVE);
-            if(user.get().getStatus() != activeUser){
+            if (user.get().getStatus() != activeUser) {
                 throw new RuntimeException("The user you are trying to make Manager is Inactive.");
             }
 

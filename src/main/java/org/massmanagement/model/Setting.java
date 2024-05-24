@@ -20,15 +20,25 @@ public class Setting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true)
     private String name;
+
     @Convert(converter = MapConverter.class)
     @Column(columnDefinition = "JSON")
     private Map<String,Long> properties = new HashMap<>();
+
     @Convert(converter = NumberListConverter.class)
     @Column(columnDefinition = "JSON")
     private List<Long> excludeTransactionTypes = new ArrayList<>();
 
+    @Convert(converter = NumberListConverter.class)
+    @Column(columnDefinition = "JSON")
+    private List<Long> billTypes = new ArrayList<>();
+
+//    @Convert(converter = NumberListConverter.class)
+//    @Column(columnDefinition = "JSON")
+//    private List<Long> incomes = new ArrayList<>();
 
     public long getProperty(String name){
 

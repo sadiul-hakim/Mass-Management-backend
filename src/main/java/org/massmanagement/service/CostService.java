@@ -19,6 +19,12 @@ public class CostService {
 
     public Cost save(Cost cost) {
         log.info("Saving cost : {}", cost);
+
+        if (cost.getType() == 0 || cost.getAmount() == 0) {
+            log.warn("Trying to save invalid cost!");
+            log.info(cost.toString());
+            return null;
+        }
         return costRepo.save(cost);
     }
 

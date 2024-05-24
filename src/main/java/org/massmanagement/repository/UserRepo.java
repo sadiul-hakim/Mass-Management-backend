@@ -20,4 +20,5 @@ public interface UserRepo extends JpaRepository<User,Long> {
     List<UserProjection> findUserProjectedBy();
     List<User> findAllByRole(UserRole role);
     List<User> findAllByStatus(long status);
+    List<User> findAllByStatusNotIn(List<Long> status);
 }

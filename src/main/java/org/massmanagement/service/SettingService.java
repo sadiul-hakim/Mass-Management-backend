@@ -26,6 +26,7 @@ public class SettingService {
 
             existingSetting.setProperties(setting.getProperties());
             existingSetting.setExcludeTransactionTypes(setting.getExcludeTransactionTypes());
+            existingSetting.setBillTypes(setting.getBillTypes());
             return settingRepo.save(existingSetting);
         }catch (Exception ex){
             log.error("Error occurred while saving setting. Cause {}",ex.getMessage());
@@ -50,6 +51,7 @@ public class SettingService {
 
             setting.setProperties(new HashMap<>());
             setting.setExcludeTransactionTypes(new ArrayList<>());
+            setting.setBillTypes(new ArrayList<>());
 
             var saved = save(setting);
             return saved.getProperties().isEmpty();

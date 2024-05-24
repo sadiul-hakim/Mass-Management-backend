@@ -2,6 +2,7 @@ package org.massmanagement.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Meal;
+import org.massmanagement.model.MealInRange;
 import org.massmanagement.service.MealService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class MealController {
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Meal meal) {
         var savedMeal = mealService.save(meal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedMeal);
+    }
+
+    @PostMapping("/add-in-range")
+    public ResponseEntity<?> addInRange(@RequestBody MealInRange mealInRange) {
+        var savedMeal = mealService.saveInRange(mealInRange);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMeal);
     }
 

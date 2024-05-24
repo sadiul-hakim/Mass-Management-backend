@@ -13,7 +13,7 @@ public class TransactionType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(length = 100,nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     private String title;
     @Column(length = 200)
     private String description;

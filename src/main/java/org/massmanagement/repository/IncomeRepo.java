@@ -11,6 +11,8 @@ import java.util.Set;
 public interface IncomeRepo extends JpaRepository<Income, Long> {
     List<Income> findAllByType(long type);
 
+    List<Income> findAllByTypeIn(List<Long> types);
+
     List<Income> findAllByUserId(long userId);
 
     @Query(value = "SELECT SUM(amount) FROM income", nativeQuery = true)
@@ -18,6 +20,9 @@ public interface IncomeRepo extends JpaRepository<Income, Long> {
 
     @Query(value = "SELECT TYPE FROM income", nativeQuery = true)
     Set<Long> findCountOfType();
+
+    @Query(value = "SELECT SUM(amount) FROM income where type = :type", nativeQuery = true)
+    long findSumOfAmountByType(@Param("type") long type);
 
     @Query(value = "SELECT COALESCE(SUM(amount), 0) FROM income WHERE user_id = :userId AND TYPE = :type", nativeQuery = true)
     Long findSumOfIncomeByUserIdAndType(@Param("userId") long userId, @Param("type") long type);

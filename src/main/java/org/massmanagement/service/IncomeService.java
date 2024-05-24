@@ -2,6 +2,7 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.model.Income;
 import org.massmanagement.model.TransactionType;
@@ -20,8 +21,16 @@ public class IncomeService {
     private final IncomeRepo incomeRepo;
     private final TransactionTypeService transactionTypeService;
     private final UserService userService;
+
     public IncomeDTO save(Income income) {
         log.info("Saving income : {}", income);
+
+        if (income.getAmount() == 0 || income.getType() == 0 || income.getUserId() == 0) {
+            log.warn("Trying to save invalid income!");
+            log.info(income.toString());
+            return null;
+        }
+
         return convertToDTO(incomeRepo.save(income));
     }
 
@@ -36,36 +45,52 @@ public class IncomeService {
         return all.stream().map(this::convertToDTO).toList();
     }
 
-    public List<IncomeDTO> getAllByType(long type){
-        log.info("Getting all incomes by type {}.",type);
+    public List<IncomeDTO> findByTypeInList(List<Long> types) {
+        log.info("Getting all cost where types are not in {}.", types);
+        var allIncomes = incomeRepo.findAllByTypeIn(types);
+        return allIncomes.stream().map(this::convertToDTO).toList();
+    }
+
+    public List<IncomeDTO> getAllByType(long type) {
+        log.info("Getting all incomes by type {}.", type);
         var all = incomeRepo.findAllByType(type);
         return all.stream().map(this::convertToDTO).toList();
     }
 
-    public List<IncomeDTO> getAllByUser(long user){
-        log.info("Getting all incomes by user {}.",user);
+    public List<IncomeDTO> getAllByUser(long user) {
+        log.info("Getting all incomes by user {}.", user);
         var all = incomeRepo.findAllByUserId(user);
         return all.stream().map(this::convertToDTO).toList();
     }
 
-    public long getTotalAmount(){
-        try{
+    public long getTotalAmount() {
+        try {
             log.info("Getting total amount of income.");
             return incomeRepo.findSumOfAmount();
-        }catch (Exception ex){
-            log.error("Error occurred in getTotalAmount() : cause {}",ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Error occurred in getTotalAmount() : cause {}", ex.getMessage());
             return 0L;
         }
     }
 
-    public Set<Long> countTypes(){
+    public Set<Long> countTypes() {
         log.info("Getting types in income.");
         return incomeRepo.findCountOfType();
     }
 
-    public long getSumOfAmountByUserAndType(long user,long type){
-        log.info("Getting sum of amount by user {} and type {}",user,type);
-        return incomeRepo.findSumOfIncomeByUserIdAndType(user,type);
+    public long getSumOfAmountByUserAndType(long user, long type) {
+        log.info("Getting sum of amount by user {} and type {}", user, type);
+        return incomeRepo.findSumOfIncomeByUserIdAndType(user, type);
+    }
+
+    public long getSumByType(long type) {
+        try {
+            log.info("Getting sum of income by type {}.", type);
+            return incomeRepo.findSumOfAmountByType(type);
+        } catch (Exception e) {
+            log.error("Error occurred in getSumByType(): cause {}", e.getMessage());
+            return 0L;
+        }
     }
 
     public boolean delete(long id) {
@@ -79,21 +104,21 @@ public class IncomeService {
         }
     }
 
-    public boolean deleteAll(){
+    public boolean deleteAll() {
         log.info("Deleting all incomes.");
-        try{
+        try {
             incomeRepo.deleteAll();
             return true;
-        }catch (Exception ex){
-            log.error("Could not delete incomes. Cause {}",ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Could not delete incomes. Cause {}", ex.getMessage());
             return false;
         }
     }
 
-    public IncomeDTO convertToDTO(Income income){
+    public IncomeDTO convertToDTO(Income income) {
         var transactionType = transactionTypeService.getById(income.getType());
         var user = userService.getById(income.getUserId());
 
-        return new IncomeDTO(income.getId(),transactionType,user,income.getAmount(), DateFormatter.formatDateTime(income.getDate()));
+        return new IncomeDTO(income.getId(), transactionType, user, income.getAmount(), DateFormatter.formatDateTime(income.getDate()));
     }
 }

@@ -18,6 +18,12 @@ public class MealTypeService {
 
     public MealType save(MealType mealType) {
         log.info("Saving Meal Type : {}", mealType);
+
+        if(mealType.getName().isEmpty()){
+            log.warn("Invalid meal type!");
+            log.info(mealType.toString());
+            return null;
+        }
         return mealTypeRepo.save(mealType);
     }
 

@@ -51,9 +51,9 @@ public class ReportModelService {
         }
     }
 
-    public boolean delete(long id){
-        log.info("Deleting report by id {}.",id);
-        try{
+    public boolean delete(long id) {
+        log.info("Deleting report by id {}.", id);
+        try {
             reportRepo.deleteById(id);
             return true;
         } catch (Exception ex) {
@@ -62,9 +62,9 @@ public class ReportModelService {
         }
     }
 
-    public List<ReportModel> getAll(){
+    public List<ReportModel> getAll() {
         log.info("Get all reports.");
-        try{
+        try {
             return reportRepo.findAll();
         } catch (Exception ex) {
             log.error("Could not get all report. Cause {}", ex.getMessage());
@@ -108,34 +108,40 @@ public class ReportModelService {
         // Table
         float width = pdf.getPageSize().getWidth();
 
-        float[] columnDefinitionSize = {14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F};
+        float[] columnDefinitionSize = {14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F};
 
         PdfPTable table = getTable(columnDefinitionSize, width);
 
         addCell("Date", table, font14);
+        addCell("Total Deposit", table, font14);
         addCell("Total Income", table, font14);
         addCell("Total Cost", table, font14);
         addCell("Total Borders", table, font14);
         addCell("Meal Rate", table, font14);
-        addCell("Other Cost", table, font14);
+        addCell("Market Cost", table, font14);
+        addCell("Extra Cost", table, font14);
         addCell("Total Meals", table, font14);
 
 
         addCell(String.valueOf(report.get("date")), table, font10);
+        addCell(String.valueOf(report.get("deposit")), table, font10);
         addCell(String.valueOf(report.get("total_income")), table, font10);
         addCell(String.valueOf(report.get("total_cost")), table, font10);
         addCell(String.valueOf(report.get("total_borders")), table, font10);
         addCell(String.valueOf(report.get("mealRate")), table, font10);
-        addCell(String.valueOf(report.get("other_cost")), table, font10);
+        addCell(String.valueOf(report.get("market")), table, font10);
+        addCell(String.valueOf(report.get("extra_cost")), table, font10);
         addCell(String.valueOf(report.get("total_meals")), table, font10);
 
         pdf.add(table);
 
-        writeBorderInfo(pdf, report, width, font10, font14, columnDefinitionSize, subTitleFont);
+        writeBorderInfo(pdf, report, width, font10, font14, subTitleFont);
     }
 
     private void writeBorderInfo(Document pdf, Map<String, Object> report, float width,
-                                 Font font10, Font font14, float[] columnDefinitionSize, Font subTitleFont) {
+                                 Font font10, Font font14, Font subTitleFont) {
+
+        float[] columnDefinitionSize = {14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F, 14.29F};
 
         var subTitle = new Paragraph("Borders", subTitleFont);
         subTitle.setSpacingAfter(10);
@@ -146,7 +152,7 @@ public class ReportModelService {
         addCell("Border", table, font14);
         addCell("Meals", table, font14);
         addCell("Meal Cost", table, font14);
-        addCell("Other Cost", table, font14);
+        addCell("Extra Cost", table, font14);
         addCell("Total Cost", table, font14);
         addCell("Deposit", table, font14);
         addCell("Balance", table, font14);
@@ -158,7 +164,7 @@ public class ReportModelService {
             addCell(String.valueOf(singleBorder.get("name")), table, font10);
             addCell(String.valueOf(border.get("meals")), table, font10);
             addCell(String.valueOf(border.get("meal_cost")), table, font10);
-            addCell(String.valueOf(border.get("other_cost")), table, font10);
+            addCell(String.valueOf(border.get("extra_cost")), table, font10);
             addCell(String.valueOf(border.get("total_cost")), table, font10);
             addCell(String.valueOf(border.get("deposit")), table, font10);
             addCell(String.valueOf(border.get("balance")), table, font10);

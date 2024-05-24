@@ -15,8 +15,14 @@ import java.util.List;
 public class UserStatusService {
     private final UserStatusRepo userStatusRepo;
     private final UserRepo userRepo;
+
     public UserStatus save(UserStatus userStatus) {
         log.info("Saving user role : {}", userStatus);
+
+        if (userStatus.getStatus().isEmpty()) {
+            log.warn("Invalid User Status {}", userStatus);
+            return null;
+        }
         return userStatusRepo.save(userStatus);
     }
 
@@ -39,7 +45,7 @@ public class UserStatusService {
         log.info("Deleting user status by id : {}", id);
         try {
 
-            if(!userRepo.findAllByStatus(id).isEmpty()){
+            if (!userRepo.findAllByStatus(id).isEmpty()) {
                 log.warn("User Status is in use!");
                 return false;
             }

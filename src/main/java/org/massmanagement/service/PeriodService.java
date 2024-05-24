@@ -18,8 +18,15 @@ public class PeriodService {
     private final PeriodRepo periodRepo;
     private final MealRepo mealRepo;
     private final MealPlanRepo mealPlanRepo;
+
     public Period save(Period period) {
         log.info("Saving period : {}", period);
+
+        if (period.getName().isEmpty()) {
+            log.warn("Invalid period!");
+            log.info(period.toString());
+            return null;
+        }
         return periodRepo.save(period);
     }
 
@@ -33,7 +40,7 @@ public class PeriodService {
         return periodRepo.findAll();
     }
 
-    public long count(){
+    public long count() {
         log.info("Counting periods.");
         return periodRepo.count();
     }
@@ -42,7 +49,7 @@ public class PeriodService {
         log.info("Deleting period id : {}", id);
         try {
 
-            if(!(mealRepo.findAllByPeriod(id).isEmpty() && mealPlanRepo.findAllByPeriod(id).isEmpty())){
+            if (!(mealRepo.findAllByPeriod(id).isEmpty() && mealPlanRepo.findAllByPeriod(id).isEmpty())) {
                 log.warn("Period is in use!");
                 return false;
             }
