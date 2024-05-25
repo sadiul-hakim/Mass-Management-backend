@@ -9,12 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/meal/v1")
 @RequiredArgsConstructor
 public class MealController {
     private final MealService mealService;
+
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Meal meal) {
         var savedMeal = mealService.save(meal);
@@ -50,5 +53,11 @@ public class MealController {
         boolean deleted = mealService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Meal deleted successfully.")) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete meal."));
+    }
+
+    @GetMapping("/get-meal-sheet")
+    public ResponseEntity<?> mealSheet() {
+        Map<String, Map<String, List<Integer>>> mealSheet = mealService.mealSheet();
+        return ResponseEntity.ok(mealSheet);
     }
 }

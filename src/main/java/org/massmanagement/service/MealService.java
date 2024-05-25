@@ -3,17 +3,21 @@ package org.massmanagement.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.MealDTO;
+import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.Meal;
 import org.massmanagement.model.MealInRange;
 import org.massmanagement.model.Period;
+import org.massmanagement.model.Setting;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.util.DateFormatter;
+import org.massmanagement.util.SettingParameter;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -23,9 +27,21 @@ public class MealService {
     private final UserService userService;
     private final MealTypeService mealTypeService;
     private final PeriodService periodService;
+    private final SettingService settingService;
 
     public MealDTO save(Meal meal) {
         log.info("Saving meal : {}", meal);
+
+        if(meal.getAmount() < 1){
+            log.warn("Meal amount can not be 0 or less");
+            return null;
+        }
+
+        Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
+        if (meal.getType() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF) && meal.getAmount() > 1) {
+            log.warn("Can not off more that one meal!");
+            return null;
+        }
 
         if (meal.getAmount() == 0 || meal.getType() == 0 || meal.getPeriod() == 0 || meal.getUserId() == 0) {
             log.warn("Trying to save invalid meal!");
@@ -129,6 +145,61 @@ public class MealService {
         }
 
         return meals;
+    }
+
+    public Map<String, Map<String, List<Integer>>> mealSheet() {
+        List<UserDTO> users = userService.getAll();
+        if (users.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
+
+        Map<String, Map<String, List<Integer>>> sheet = new HashMap<>();
+        fillMealSheet(sheet, users);
+
+        for (UserDTO user : users) {
+            List<MealDTO> meals = getAllByUser(user.id());
+
+            Map<String, List<Integer>> daySheet = sheet.get(user.name());
+            for (MealDTO meal : meals) {
+                LocalDate localDate = DateFormatter.stringToLocalDate(meal.date());
+                List<Integer> mealsStatus = daySheet.get(String.valueOf(localDate.getDayOfMonth()));
+                if (mealsStatus == null) continue;
+
+                if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
+                    Integer status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
+                    mealsStatus.set(meal.period().getPeriodOrder() - 1, status - meal.amount());
+                } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {
+                    Integer status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
+                    mealsStatus.set(meal.period().getPeriodOrder() - 1, status + meal.amount());
+                }
+            }
+        }
+
+        return sheet;
+    }
+
+    private void fillMealSheet(Map<String, Map<String, List<Integer>>> sheet, List<UserDTO> users) {
+
+        LocalDate today = LocalDate.now();
+        LocalDate startDateOfTheMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1);
+        today = today.plusDays(1);
+
+        List<Period> periods = periodService.getAll();
+
+        for (UserDTO user : users) {
+            LocalDate copy = startDateOfTheMonth;
+            Map<String, List<Integer>> dayMeal = new HashMap<>();
+            while (copy.isBefore(today)) {
+
+                List<Integer> meals = new ArrayList<>();
+                IntStream.rangeClosed(1, periods.size()).forEach(_ -> meals.add(1));
+                dayMeal.put(String.valueOf(copy.getDayOfMonth()), meals);
+                copy = copy.plusDays(1);
+            }
+            sheet.put(user.name(), dayMeal);
+        }
     }
 
     public MealDTO convertToDTO(Meal meal) {

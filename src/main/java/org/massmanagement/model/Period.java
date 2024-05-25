@@ -16,4 +16,5 @@ public class Period {
     @Column(unique = true)
     private String name;
     private String description;
+    private int periodOrder;
 }

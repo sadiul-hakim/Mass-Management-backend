@@ -154,7 +154,7 @@ public class ReportService {
         LocalDate firstDayOfMonth = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
         Period until = firstDayOfMonth.until(currentDate);
 
-        return until.getDays();
+        return until.getDays() + 1;
     }
 
     private long removeOffAndAddExtras(long singlePersonMeals, long user, Setting setting) {
@@ -168,6 +168,13 @@ public class ReportService {
         }
 
         for (MealDTO meal : mealList) {
+
+            LocalDate today = LocalDate.now();
+            LocalDate mealDate = DateFormatter.stringToLocalDate(meal.date());
+            if (mealDate.isAfter(today)) {
+                continue;
+            }
+
             if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
                 singlePersonMeals -= meal.amount();
             } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {

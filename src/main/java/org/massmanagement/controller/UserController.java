@@ -1,6 +1,8 @@
 package org.massmanagement.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.massmanagement.dto.ChangePasswordDTO;
 import org.massmanagement.dto.UserUpdateDTO;
 import org.massmanagement.model.User;
 import org.massmanagement.service.UserService;
@@ -15,7 +17,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody User user) {
         var saved = userService.save(user);
@@ -60,5 +61,13 @@ public class UserController {
         boolean deleted = userService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "User deleted successfully.")) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not delete user."));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto, HttpServletRequest request){
+        boolean changed = userService.changePassword(dto,request);
+
+        return changed ? ResponseEntity.ok(Collections.singletonMap("message","Password changed successfully!")) :
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message","Could not change password!"));
     }
 }
