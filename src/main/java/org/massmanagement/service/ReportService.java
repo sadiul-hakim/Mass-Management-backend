@@ -91,7 +91,9 @@ public class ReportService {
             } else {
                 meals = 0;
             }
-            userInfo.put("meals", meals);
+
+            long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
+            userInfo.put("meals", Math.max(meals, fixedMeal));
 
             double mealCost;
             if (user.status().getStatus().equalsIgnoreCase("Active")) {

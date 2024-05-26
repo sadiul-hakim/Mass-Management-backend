@@ -36,10 +36,6 @@ public class Setting {
     @Column(columnDefinition = "JSON")
     private List<Long> billTypes = new ArrayList<>();
 
-//    @Convert(converter = NumberListConverter.class)
-//    @Column(columnDefinition = "JSON")
-//    private List<Long> incomes = new ArrayList<>();
-
     public long getProperty(String name){
 
         if(name.isEmpty() || !properties.containsKey(name)){

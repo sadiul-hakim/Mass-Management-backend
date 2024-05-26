@@ -10,7 +10,7 @@
     </parent>
     <groupId>org</groupId>
     <artifactId>MassManagement</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>MassManagement</name>
     <description>MassManagement</description>
     <properties>
@@ -109,6 +109,18 @@
                     <source>21</source>
                     <target>21</target>
                     <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.massmanagement.MassManagementApplication</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

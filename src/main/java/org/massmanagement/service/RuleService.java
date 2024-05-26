@@ -6,6 +6,7 @@ import org.massmanagement.model.Rule;
 import org.massmanagement.repository.RuleRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Slf4j
@@ -16,6 +17,12 @@ public class RuleService {
 
     public Rule save(Rule rule) {
         log.info("Saving rule {}", rule);
+
+        if(rule.getRule().isEmpty()){
+            log.info("Can not save empty rule!");
+            return null;
+        }
+        rule.setDate(new Timestamp(System.currentTimeMillis()));
         return ruleRepository.save(rule);
     }
 

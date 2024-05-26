@@ -8,5 +8,5 @@ public class SettingParameter {
     public static final String MEAL_TYPE_OFF = "MealTypeOff";
     public static final String MEAL_TYPE_EXTRA = "MealTypeExtra";
     public static final String USER_ROLE_BORDER = "UserRoleBorder";
-    public static final String USER_ROLE_MANAGER = "UserRoleManager";
+    public static final String NUMBER_OF_FIXED_MEAL = "numberOfFixedMeal";
 }
