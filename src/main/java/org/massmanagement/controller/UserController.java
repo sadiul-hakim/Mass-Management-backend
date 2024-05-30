@@ -17,6 +17,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody User user) {
         var saved = userService.save(user);
@@ -52,7 +53,7 @@ public class UserController {
     @GetMapping("/change-manager")
     public ResponseEntity<?> assignRole(@RequestParam long managerId, @RequestParam long userId) {
         boolean assigned = userService.changeManager(managerId, userId);
-        return assigned ? ResponseEntity.ok(Collections.singletonMap("message", STR."User \{userId} is assigned to role manager successfully.")) :
+        return assigned ? ResponseEntity.ok(Collections.singletonMap("message", String.format("User %s is assigned to role manager successfully.", userId))) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Could not assign role manager."));
     }
 
@@ -64,10 +65,10 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto, HttpServletRequest request){
-        boolean changed = userService.changePassword(dto,request);
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto, HttpServletRequest request) {
+        boolean changed = userService.changePassword(dto, request);
 
-        return changed ? ResponseEntity.ok(Collections.singletonMap("message","Password changed successfully!")) :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message","Could not change password!"));
+        return changed ? ResponseEntity.ok(Collections.singletonMap("message", "Password changed successfully!")) :
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Could not change password!"));
     }
 }

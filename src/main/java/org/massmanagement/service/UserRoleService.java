@@ -24,6 +24,12 @@ public class UserRoleService {
             return null;
         }
 
+        RoleDTO role = getByRole("ROLE_" + userRole.getRole().toUpperCase());
+        if (role.id() != 0) {
+            log.warn("Role already exists!");
+            return null;
+        }
+
         userRole.setRole(userRole.getRole().toUpperCase());
 
         if (!userRole.getRole().startsWith("ROLE_")) {

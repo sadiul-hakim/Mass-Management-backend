@@ -10,6 +10,7 @@ import org.massmanagement.repository.PeriodRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,6 +28,13 @@ public class PeriodService {
             log.info(period.toString());
             return null;
         }
+
+        Optional<Period> existingPeriod = periodRepo.findByPeriodOrderOrName(period.getPeriodOrder(), period.getName());
+        if (existingPeriod.isPresent()) {
+            log.warn("Period with this order already exists!");
+            return null;
+        }
+
         return periodRepo.save(period);
     }
 

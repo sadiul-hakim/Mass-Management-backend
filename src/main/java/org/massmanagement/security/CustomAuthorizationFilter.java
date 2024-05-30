@@ -34,7 +34,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
 
         try {
-            if (request.getServletPath().equalsIgnoreCase("/login")) {
+            if (request.getServletPath().equalsIgnoreCase("/login") ||
+                    request.getServletPath().endsWith("/validate-token")) {
                 filterChain.doFilter(request, response);
             } else {
                 String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -70,7 +71,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             // If the token is Invalid send an error with the response
             Map<String, String> errorMap = new HashMap<>();
             errorMap.put("error", ex.getMessage());
-            ResponseUtility.commitResponse(response, errorMap,500);
+            ResponseUtility.commitResponse(response, errorMap, 500);
         }
     }
 }

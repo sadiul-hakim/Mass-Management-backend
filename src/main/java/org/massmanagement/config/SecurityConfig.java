@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.security.CustomAuthenticationFilter;
 import org.massmanagement.security.CustomAuthorizationFilter;
 import org.massmanagement.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,16 +28,19 @@ import java.util.List;
 public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomAuthorizationFilter customAuthorizationFilter;
+    @Value("${mass-management.ui.url}")
+    private String massManagementUi;
+
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
 
 
         return http.csrf(AbstractHttpConfigurer::disable)
-                .cors(c->{
-                    CorsConfigurationSource source = _ -> {
+                .cors(c -> {
+                    CorsConfigurationSource source = e -> {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(List.of("http://localhost:8080"));
-                        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+                        config.setAllowedOrigins(List.of(massManagementUi));
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                         config.setAllowedHeaders(List.of("*"));
 
                         return config;
@@ -44,16 +48,19 @@ public class SecurityConfig {
 
                     c.configurationSource(source);
                 })
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/security/v1/validate-token").permitAll())
                 .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("MANAGER"))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new CustomAuthenticationFilter(authenticationProvider()))
                 .build();
     }
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

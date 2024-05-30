@@ -88,12 +88,19 @@ public class ReportService {
             if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 meals = singleUserMeals();
                 meals = removeOffAndAddExtras(meals, user.id(), setting);
+
+                long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
+
+                if (fixedMeal > meals) {
+                    long extraMeal = fixedMeal - meals;
+                    report.put("total_meals", ((long) report.get("total_meals")) + extraMeal);
+                }
+                meals = Math.max(meals, fixedMeal);
             } else {
                 meals = 0;
             }
 
-            long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
-            userInfo.put("meals", Math.max(meals, fixedMeal));
+            userInfo.put("meals", meals);
 
             double mealCost;
             if (user.status().getStatus().equalsIgnoreCase("Active")) {

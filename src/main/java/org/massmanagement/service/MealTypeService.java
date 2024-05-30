@@ -8,6 +8,7 @@ import org.massmanagement.repository.MealTypeRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,6 +25,13 @@ public class MealTypeService {
             log.info(mealType.toString());
             return null;
         }
+
+        Optional<MealType> type = mealTypeRepo.findByName(mealType.getName());
+        if(type.isPresent()){
+            log.warn("Meal Type already exists!");
+            return null;
+        }
+
         return mealTypeRepo.save(mealType);
     }
 

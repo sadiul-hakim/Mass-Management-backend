@@ -23,6 +23,13 @@ public class UserStatusService {
             log.warn("Invalid User Status {}", userStatus);
             return null;
         }
+
+        UserStatus status = getByStatus(userStatus.getStatus());
+        if(status.getId() != 0){
+            log.warn("Status already exists!");
+            return null;
+        }
+
         return userStatusRepo.save(userStatus);
     }
 

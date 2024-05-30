@@ -194,7 +194,7 @@ public class MealService {
             while (copy.isBefore(today)) {
 
                 List<Integer> meals = new ArrayList<>();
-                IntStream.rangeClosed(1, periods.size()).forEach(_ -> meals.add(1));
+                IntStream.rangeClosed(1, periods.size()).forEach(e -> meals.add(1));
                 dayMeal.put(String.valueOf(copy.getDayOfMonth()), meals);
                 copy = copy.plusDays(1);
             }
