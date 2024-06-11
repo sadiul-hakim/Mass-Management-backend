@@ -2,13 +2,15 @@ package org.massmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Meal {
@@ -17,7 +19,7 @@ public class Meal {
     private long id;
     private long userId;
     private long type;
-    private int amount;
+    private double amount;
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp date = new Timestamp(System.currentTimeMillis());
     private long period;

@@ -18,4 +18,5 @@ public class Period {
     private String description;
     @Column(unique = true)
     private int periodOrder;
+    private double meal;
 }

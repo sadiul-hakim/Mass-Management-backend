@@ -1,11 +1,9 @@
 package org.massmanagement.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.ChangePasswordDTO;
-import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.dto.UserUpdateDTO;
 import org.massmanagement.model.Setting;
@@ -17,8 +15,6 @@ import org.massmanagement.repository.UserRoleRepo;
 import org.massmanagement.util.DateFormatter;
 import org.massmanagement.util.SettingParameter;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -200,7 +196,7 @@ public class UserService {
         );
     }
 
-    public boolean changePassword(ChangePasswordDTO dto, HttpServletRequest request) {
+    public boolean changePassword(ChangePasswordDTO dto) {
 
         if (!dto.newPassword().equals(dto.confirmPassword())) {
             return false;

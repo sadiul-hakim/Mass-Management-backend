@@ -59,6 +59,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String,String> tokenMap = new HashMap<>();
         tokenMap.put("token",accessToken);
 
+        response.addHeader("login","yes");
+
         ResponseUtility.commitResponse(response,tokenMap,200);
     }
 

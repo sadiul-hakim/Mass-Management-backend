@@ -57,7 +57,7 @@ public class MealController {
 
     @GetMapping("/get-meal-sheet")
     public ResponseEntity<?> mealSheet() {
-        Map<String, Map<String, List<Integer>>> mealSheet = mealService.mealSheet();
+        Map<String, Map<String, List<Double>>> mealSheet = mealService.mealSheet();
         return ResponseEntity.ok(mealSheet);
     }
 }

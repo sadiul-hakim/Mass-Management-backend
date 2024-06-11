@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -32,7 +31,7 @@ public class MealService {
     public MealDTO save(Meal meal) {
         log.info("Saving meal : {}", meal);
 
-        if(meal.getAmount() < 1){
+        if (meal.getAmount() < 0) {
             log.warn("Meal amount can not be 0 or less");
             return null;
         }
@@ -147,7 +146,7 @@ public class MealService {
         return meals;
     }
 
-    public Map<String, Map<String, List<Integer>>> mealSheet() {
+    public Map<String, Map<String, List<Double>>> mealSheet() {
         List<UserDTO> users = userService.getAll();
         if (users.isEmpty()) {
             return Collections.emptyMap();
@@ -155,23 +154,23 @@ public class MealService {
 
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
 
-        Map<String, Map<String, List<Integer>>> sheet = new HashMap<>();
+        Map<String, Map<String, List<Double>>> sheet = new HashMap<>();
         fillMealSheet(sheet, users);
 
         for (UserDTO user : users) {
             List<MealDTO> meals = getAllByUser(user.id());
 
-            Map<String, List<Integer>> daySheet = sheet.get(user.name());
+            Map<String, List<Double>> daySheet = sheet.get(user.name());
             for (MealDTO meal : meals) {
                 LocalDate localDate = DateFormatter.stringToLocalDate(meal.date());
-                List<Integer> mealsStatus = daySheet.get(String.valueOf(localDate.getDayOfMonth()));
+                List<Double> mealsStatus = daySheet.get(String.valueOf(localDate.getDayOfMonth()));
                 if (mealsStatus == null) continue;
 
                 if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
-                    Integer status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
+                    Double status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
                     mealsStatus.set(meal.period().getPeriodOrder() - 1, status - meal.amount());
                 } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {
-                    Integer status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
+                    Double status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
                     mealsStatus.set(meal.period().getPeriodOrder() - 1, status + meal.amount());
                 }
             }
@@ -180,7 +179,7 @@ public class MealService {
         return sheet;
     }
 
-    private void fillMealSheet(Map<String, Map<String, List<Integer>>> sheet, List<UserDTO> users) {
+    private void fillMealSheet(Map<String, Map<String, List<Double>>> sheet, List<UserDTO> users) {
 
         LocalDate today = LocalDate.now();
         LocalDate startDateOfTheMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1);
@@ -190,11 +189,15 @@ public class MealService {
 
         for (UserDTO user : users) {
             LocalDate copy = startDateOfTheMonth;
-            Map<String, List<Integer>> dayMeal = new HashMap<>();
+            Map<String, List<Double>> dayMeal = new HashMap<>();
             while (copy.isBefore(today)) {
 
-                List<Integer> meals = new ArrayList<>();
-                IntStream.rangeClosed(1, periods.size()).forEach(e -> meals.add(1));
+                List<Double> meals = new ArrayList<>();
+
+                periods.forEach(period -> {
+                    meals.add(period.getMeal());
+                });
+
                 dayMeal.put(String.valueOf(copy.getDayOfMonth()), meals);
                 copy = copy.plusDays(1);
             }

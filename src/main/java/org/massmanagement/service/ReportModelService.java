@@ -1,21 +1,28 @@
 package org.massmanagement.service;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.massmanagement.model.ReportModel;
 import org.massmanagement.repository.ReportRepo;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -30,6 +37,10 @@ public class ReportModelService {
     public boolean saveAndCleanUp(ReportModel reportModel) {
         log.info("Saving report and cleaning database.");
         try {
+
+            // Put the sheet in report
+            Map<String, Map<String, List<Double>>> meals = mealService.mealSheet();
+            reportModel.getReport().put("meal_sheet",meals);
 
             log.info("Saving report.");
             ReportModel save = reportRepo.save(reportModel);

@@ -7,7 +7,7 @@ public record MealDTO(
         long id,
         UserDTO user,
         MealType type,
-        int amount,
+        double amount,
         String date,
         Period period
 ) {

@@ -13,7 +13,7 @@ public class MealInRange {
     private long id;
     private long userId;
     private long type;
-    private int amount;
+    private double amount;
     private Timestamp startDate = new Timestamp(System.currentTimeMillis());
     private Timestamp endDate = new Timestamp(System.currentTimeMillis());
     private long period;

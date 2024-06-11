@@ -1,17 +1,21 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.dto.UserDTO;
-import org.massmanagement.model.Income;
 import org.massmanagement.model.Setting;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.projection.UserProjection;
 import org.massmanagement.util.SettingParameter;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -25,6 +29,8 @@ public class HomeService {
     private final SettingService settingService;
 
     public Map<String, Long> getTotals() {
+
+        log.info("Getting totals.");
 
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
         UserStatus active = userStatusService.getById(setting.getProperty(SettingParameter.USER_STATUS_ACTIVE));
@@ -47,6 +53,8 @@ public class HomeService {
     }
 
     public List<Map<String, Object>> borderInformation() {
+
+        log.info("Getting User info.");
 
         List<Map<String, Object>> borderInfo = new ArrayList<>();
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);

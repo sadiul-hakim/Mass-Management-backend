@@ -65,8 +65,8 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto, HttpServletRequest request) {
-        boolean changed = userService.changePassword(dto, request);
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto) {
+        boolean changed = userService.changePassword(dto);
 
         return changed ? ResponseEntity.ok(Collections.singletonMap("message", "Password changed successfully!")) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Could not change password!"));

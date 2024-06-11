@@ -1,6 +1,7 @@
 package org.massmanagement.config;
 
 import lombok.RequiredArgsConstructor;
+import org.massmanagement.security.AlertFilter;
 import org.massmanagement.security.CustomAuthenticationFilter;
 import org.massmanagement.security.CustomAuthorizationFilter;
 import org.massmanagement.service.CustomUserDetailsService;
@@ -28,6 +29,7 @@ import java.util.List;
 public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomAuthorizationFilter customAuthorizationFilter;
+    private final AlertFilter alertFilter;
     @Value("${mass-management.ui.url}")
     private String massManagementUi;
 
@@ -53,6 +55,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new CustomAuthenticationFilter(authenticationProvider()))
+                .addFilterAfter(alertFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

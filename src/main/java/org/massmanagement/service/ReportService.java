@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.MealDTO;
 import org.massmanagement.dto.UserDTO;
+import org.massmanagement.model.Period;
 import org.massmanagement.model.Setting;
 import org.massmanagement.util.DateFormatter;
 import org.massmanagement.util.SettingParameter;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 
 @Slf4j
@@ -84,23 +84,23 @@ public class ReportService {
 
             userInfo.put("border", userData);
 
-            long meals;
+            double meals;
+            long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
             if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 meals = singleUserMeals();
                 meals = removeOffAndAddExtras(meals, user.id(), setting);
 
-                long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
-
                 if (fixedMeal > meals) {
-                    long extraMeal = fixedMeal - meals;
-                    report.put("total_meals", ((long) report.get("total_meals")) + extraMeal);
+                    double extraMeal = fixedMeal - meals;
+                    report.put("total_meals", ((double) report.get("total_meals")) + extraMeal);
                 }
-                meals = Math.max(meals, fixedMeal);
             } else {
                 meals = 0;
             }
 
             userInfo.put("meals", meals);
+            meals = Math.max(meals, fixedMeal);
+            userInfo.put("chargeable_meals", meals);
 
             double mealCost;
             if (user.status().getStatus().equalsIgnoreCase("Active")) {
@@ -134,15 +134,15 @@ public class ReportService {
         if (marketTypeId == 0) return 0.0;
 
         long totalMarketCost = costService.getSumByType(marketTypeId);
-        long totalMeals = calculateTotalMeals(report, setting);
+        double totalMeals = calculateTotalMeals(report, setting);
 
-        double mealRate = totalMarketCost / Double.parseDouble(String.valueOf(totalMeals));
+        double mealRate = totalMarketCost / totalMeals;
         return format(mealRate, "0.00");
     }
 
-    private long calculateTotalMeals(Map<String, Object> report, Setting setting) {
+    private double calculateTotalMeals(Map<String, Object> report, Setting setting) {
 
-        long singlePersonMeals = singleUserMeals();
+        double singlePersonMeals = singleUserMeals();
 
         long totalUsers = userService.countByStatus(setting.getProperty(SettingParameter.USER_STATUS_ACTIVE));
         report.put("total_borders", totalUsers);
@@ -153,20 +153,26 @@ public class ReportService {
         return totalMeals;
     }
 
-    private long singleUserMeals() {
-        long periods = periodService.count();
-        return totalsDays() * periods;
+    private double singleUserMeals() {
+        List<Period> periods = periodService.getAll();
+
+        double meals = 0;
+        for (Period period : periods) {
+            meals += period.getMeal();
+        }
+
+        return meals * totalsDays();
     }
 
     private long totalsDays() {
         LocalDate currentDate = LocalDate.now();
         LocalDate firstDayOfMonth = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
-        Period until = firstDayOfMonth.until(currentDate);
+        java.time.Period until = firstDayOfMonth.until(currentDate);
 
         return until.getDays() + 1;
     }
 
-    private long removeOffAndAddExtras(long singlePersonMeals, long user, Setting setting) {
+    private double removeOffAndAddExtras(double singlePersonMeals, long user, Setting setting) {
 
 
         List<MealDTO> mealList;
