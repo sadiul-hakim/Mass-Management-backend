@@ -11,4 +11,5 @@ public interface PeriodRepo extends JpaRepository<Period, Long> {
     long findCountOfPeriod();
 
     Optional<Period> findByPeriodOrderOrName(int periodOrder,String name);
+    Optional<Period> findPeriodByPeriodOrder(long order);
 }

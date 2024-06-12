@@ -6,6 +6,8 @@ import org.massmanagement.dto.RoleDTO;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,15 +39,19 @@ public class UserRoleService {
         }
 
         var saved = userRoleRepo.save(userRole);
+
+        clearCache();
         return convertToDTO(saved);
     }
 
+    @Cacheable("UseRole:getById")
     public RoleDTO getById(long id) {
         log.info("Getting user role by id : {}", id);
         var role = userRoleRepo.findById(id).orElse(new UserRole());
         return convertToDTO(role);
     }
 
+    @Cacheable("UseRole:getByRole")
     public RoleDTO getByRole(String role) {
         log.info("Getting user role by role name : {}", role);
 
@@ -61,6 +67,7 @@ public class UserRoleService {
         return convertToDTO(roleModel);
     }
 
+    @Cacheable("UseRole:getAll")
     public List<RoleDTO> getAll() {
         log.info("Getting all user roles.");
         var all = userRoleRepo.findAll();
@@ -89,5 +96,10 @@ public class UserRoleService {
     public RoleDTO convertToDTO(UserRole userRole) {
         if (userRole == null) return new RoleDTO();
         return new RoleDTO(userRole.getId(), userRole.getRole().replace("ROLE_", ""), userRole.getDescription());
+    }
+
+    @CacheEvict(value = {"UseRole:getById", "UseRole:getByRole", "UseRole:getAll"}, allEntries = true)
+    public void clearCache() {
+        log.info("Cleared all User Role Cache!");
     }
 }

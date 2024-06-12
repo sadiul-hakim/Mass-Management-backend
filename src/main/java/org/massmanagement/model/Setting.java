@@ -1,9 +1,7 @@
 package org.massmanagement.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.massmanagement.model.converter.MapConverter;
 import org.massmanagement.model.converter.NumberListConverter;
 
@@ -12,7 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

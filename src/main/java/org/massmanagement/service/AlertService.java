@@ -25,6 +25,9 @@ public class AlertService {
         final String address = request.getRemoteAddr();
         final int port = request.getRemotePort();
 
+        if(user == null)
+            return;
+
         Thread.ofVirtual().start(() -> {
             try {
                 StringBuilder message = new StringBuilder();

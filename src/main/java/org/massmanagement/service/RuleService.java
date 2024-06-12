@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Rule;
 import org.massmanagement.repository.RuleRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -23,9 +25,12 @@ public class RuleService {
             return null;
         }
         rule.setDate(new Timestamp(System.currentTimeMillis()));
+
+        clearCache();
         return ruleRepository.save(rule);
     }
 
+    @Cacheable("Rule:getAll")
     public List<Rule> getAll() {
         log.info("Getting all rules.");
         return ruleRepository.findAll();
@@ -35,5 +40,10 @@ public class RuleService {
         log.info("Deleting rule {}", id);
         ruleRepository.deleteById(id);
         return true;
+    }
+
+    @CacheEvict(value = {"Rule:getAll"}, allEntries = true)
+    public void clearCache() {
+        log.info("Cleared all Role Cache!");
     }
 }

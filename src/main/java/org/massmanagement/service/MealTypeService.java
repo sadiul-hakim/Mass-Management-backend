@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.MealType;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.repository.MealTypeRepo;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,26 +22,29 @@ public class MealTypeService {
     public MealType save(MealType mealType) {
         log.info("Saving Meal Type : {}", mealType);
 
-        if(mealType.getName().isEmpty()){
+        if (mealType.getName().isEmpty()) {
             log.warn("Invalid meal type!");
             log.info(mealType.toString());
             return null;
         }
 
         Optional<MealType> type = mealTypeRepo.findByName(mealType.getName());
-        if(type.isPresent()){
+        if (type.isPresent()) {
             log.warn("Meal Type already exists!");
             return null;
         }
 
+        clearCache();
         return mealTypeRepo.save(mealType);
     }
 
+    @Cacheable("MealType:getById")
     public MealType getById(long id) {
         log.info("Getting meal type by id : {}", id);
         return mealTypeRepo.findById(id).orElse(new MealType());
     }
 
+    @Cacheable("MealType:getAll")
     public List<MealType> getAll() {
         log.info("Getting all meal types.");
         return mealTypeRepo.findAll();
@@ -49,7 +54,7 @@ public class MealTypeService {
         log.info("Deleting meal type id : {}", id);
         try {
 
-            if(!mealRepo.findAllByType(id).isEmpty()){
+            if (!mealRepo.findAllByType(id).isEmpty()) {
                 log.warn("Meal Type is in use!");
                 return false;
             }
@@ -60,5 +65,10 @@ public class MealTypeService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    @CacheEvict(value = {"MealType:getById", "MealType:getAll"}, allEntries = true)
+    public void clearCache() {
+        log.info("Cleared all MealType Cache!");
     }
 }

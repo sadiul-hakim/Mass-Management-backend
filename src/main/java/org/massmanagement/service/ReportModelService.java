@@ -173,7 +173,7 @@ public class ReportModelService {
             var singleBorder = (Map<String, Object>) border.get("border");
 
             addCell(String.valueOf(singleBorder.get("name")), table, font10);
-            addCell(String.valueOf(border.get("meals")), table, font10);
+            addCell(String.valueOf(border.get("chargeable_meals")), table, font10);
             addCell(String.valueOf(border.get("meal_cost")), table, font10);
             addCell(String.valueOf(border.get("extra_cost")), table, font10);
             addCell(String.valueOf(border.get("total_cost")), table, font10);

@@ -20,9 +20,14 @@ public class AlertFilter implements Filter {
 
         try {
             String login = res.getHeader("login");
-            if (login == null || login.isEmpty()) {
+            String token = res.getHeader("accessToken");
+            if (login == null || token == null) {
                 chain.doFilter(request, response);
             }
+
+            res.setHeader("accessToken", "");
+            res.setHeader("login", "");
+
             BeanHandler.alertService.sendAlertMessage(req);
         } catch (Exception ex) {
             chain.doFilter(request, response);

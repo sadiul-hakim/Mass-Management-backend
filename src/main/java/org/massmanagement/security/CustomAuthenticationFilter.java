@@ -45,7 +45,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         // Extract the authenticated user.
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
-        if(!isManager(user)){
+        if (!isManager(user)) {
             throw new RuntimeException("User is not a manager!");
         }
 
@@ -54,20 +54,21 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("roles", user.getAuthorities());
 
-        String accessToken = JwtHelper.generateToken(user,extraClaims, (1000L * 60 * 60 * 24 * 7)); // expires in 7 days
+        String accessToken = JwtHelper.generateToken(user, extraClaims, (1000L * 60 * 60 * 24 * 7)); // expires in 7 days
 
-        Map<String,String> tokenMap = new HashMap<>();
-        tokenMap.put("token",accessToken);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", accessToken);
 
-        response.addHeader("login","yes");
+        response.addHeader("login", "yes");
+        response.addHeader("accessToken", accessToken);
 
-        ResponseUtility.commitResponse(response,tokenMap,200);
+        ResponseUtility.commitResponse(response, tokenMap, 200);
     }
 
-    private boolean isManager(CustomUserDetails user){
+    private boolean isManager(CustomUserDetails user) {
         boolean isManager = false;
         for (GrantedAuthority authority : user.getAuthorities()) {
-            if(authority.getAuthority().equals("ROLE_MANAGER")){
+            if (authority.getAuthority().equals("ROLE_MANAGER")) {
                 isManager = true;
             }
         }

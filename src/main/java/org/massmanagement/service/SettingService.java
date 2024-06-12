@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Setting;
 import org.massmanagement.repository.SettingRepo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class SettingService {
         }
     }
 
+    @Cacheable("SettingService:getByName")
     public Setting getByName(String name){
         log.info("Getting setting by name {}",name);
         return settingRepo.findByName(name).orElse(null);
@@ -62,7 +64,7 @@ public class SettingService {
     }
 
     public boolean isInvalid(Setting setting){
-        if(setting == null || setting.getProperties().isEmpty() || setting.getExcludeTransactionTypes().isEmpty())
+        if(setting == null || setting.getProperties().isEmpty())
             return false;
 
         return setting.getProperties().values().stream().anyMatch(value -> value == 0);

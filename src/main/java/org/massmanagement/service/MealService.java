@@ -36,10 +36,12 @@ public class MealService {
             return null;
         }
 
+        // If the meal type is off. we need to set default period's meal amount
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-        if (meal.getType() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF) && meal.getAmount() > 1) {
-            log.warn("Can not off more that one meal!");
-            return null;
+        if (setting.getProperty(SettingParameter.MEAL_TYPE_OFF) == meal.getType()) {
+
+            Period period = periodService.getById(meal.getPeriod());
+            meal.setAmount(period.getMeal());
         }
 
         if (meal.getAmount() == 0 || meal.getType() == 0 || meal.getPeriod() == 0 || meal.getUserId() == 0) {
@@ -53,7 +55,10 @@ public class MealService {
     public boolean saveInRange(MealInRange mealInRange) {
         log.info("Saving meal : {}", mealInRange);
 
-        if (mealInRange.getAmount() == 0 || mealInRange.getType() == 0 || mealInRange.getUserId() == 0) {
+        Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
+        long offType = setting.getProperty(SettingParameter.MEAL_TYPE_OFF);
+
+        if ((mealInRange.getType() != offType && mealInRange.getAmount() == 0) || mealInRange.getType() == 0 || mealInRange.getUserId() == 0) {
             log.warn("Trying to save invalid meal!");
             log.info(mealInRange.toString());
             return false;
@@ -135,10 +140,21 @@ public class MealService {
     private List<Meal> generateMealByPeriod(Period period, LocalDateTime startDate, MealInRange mealInRange, LocalDateTime endDate) {
         List<Meal> meals = new ArrayList<>();
 
+        Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
+        long offType = setting.getProperty(SettingParameter.MEAL_TYPE_OFF);
         LocalDateTime startDateCopy = startDate;
         while (startDateCopy.isBefore(endDate)) {
-            Meal meal = new Meal(0, mealInRange.getUserId(), mealInRange.getType(),
-                    mealInRange.getAmount(), Timestamp.valueOf(startDateCopy), period.getId());
+            Meal meal;
+
+            // If meal type is off, we need to set default meal amount
+            if (mealInRange.getType() == offType) {
+                meal = new Meal(0, mealInRange.getUserId(), mealInRange.getType(),
+                        period.getMeal(), Timestamp.valueOf(startDateCopy), period.getId());
+            } else {
+                meal = new Meal(0, mealInRange.getUserId(), mealInRange.getType(),
+                        mealInRange.getAmount(), Timestamp.valueOf(startDateCopy), period.getId());
+            }
+
             meals.add(meal);
             startDateCopy = startDateCopy.plusDays(1);
         }
