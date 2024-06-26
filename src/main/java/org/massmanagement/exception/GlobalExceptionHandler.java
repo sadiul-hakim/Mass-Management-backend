@@ -10,11 +10,18 @@ import java.util.Collections;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handleRuntimeException(RuntimeException ex){
-        log.error("{}",ex.getMessage());
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+        log.error("{}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Collections.singletonMap("error",ex.getMessage()));
+                .body(Collections.singletonMap("error", "Something went wrong"));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception ex) {
+        log.error("{}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("error", "Something went wrong"));
     }
 }

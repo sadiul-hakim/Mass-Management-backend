@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.TransactionType;
 import org.massmanagement.service.TransactionTypeService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,28 +13,28 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/transaction-type/v1")
 @RequiredArgsConstructor
-public class TransactionTypeController {
+class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody TransactionType transactionType) {
         var savedType = transactionTypeService.save(transactionType);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedType);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionType> getById(@PathVariable long id) {
         var transactionType = transactionTypeService.getById(id);
         return ResponseEntity.ok(transactionType);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         var transactionTypes = transactionTypeService.getAll();
         return ResponseEntity.ok(transactionTypes);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = transactionTypeService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Type deleted successfully.")) :

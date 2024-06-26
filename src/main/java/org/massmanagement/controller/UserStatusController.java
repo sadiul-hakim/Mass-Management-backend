@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.service.UserStatusService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,33 +13,34 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/user-status/v1")
 @RequiredArgsConstructor
-public class UserStatusController {
+class UserStatusController {
     private final UserStatusService userStatusService;
-    @PostMapping("/add")
+
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody UserStatus status) {
         var saved = userStatusService.save(status);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getById(@PathVariable long id) {
         var status = userStatusService.getById(id);
         return ResponseEntity.ok(status);
     }
 
-    @GetMapping("/get/{status}")
+    @GetMapping(value = "/get/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getByStatus(@PathVariable String status) {
         var statusModel = userStatusService.getByStatus(status);
         return ResponseEntity.ok(statusModel);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         var statusList = userStatusService.getAll();
         return ResponseEntity.ok(statusList);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = userStatusService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "User Status deleted successfully.")) :

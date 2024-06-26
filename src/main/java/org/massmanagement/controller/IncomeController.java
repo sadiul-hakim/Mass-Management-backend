@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Income;
 import org.massmanagement.service.IncomeService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,39 +13,39 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/income/v1")
 @RequiredArgsConstructor
-public class IncomeController {
+class IncomeController {
     private final IncomeService incomeService;
-    @PostMapping("/add")
+    @PostMapping(value = "/add",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody Income income) {
         var saved = incomeService.save(income);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping(value = "/get/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getById(@PathVariable long id) {
         var income = incomeService.getById(id);
         return ResponseEntity.ok(income);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping(value = "/get-all",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         var incomeList = incomeService.getAll();
         return ResponseEntity.ok(incomeList);
     }
 
-    @GetMapping("/get-all-by-type/{type}")
+    @GetMapping(value = "/get-all-by-type/{type}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllByType(@PathVariable long type) {
         var incomeList = incomeService.getAllByType(type);
         return ResponseEntity.ok(incomeList);
     }
 
-    @GetMapping("/get-all-by-user/{user}")
+    @GetMapping(value = "/get-all-by-user/{user}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllByUser(@PathVariable long user) {
         var incomeList = incomeService.getAllByUser(user);
         return ResponseEntity.ok(incomeList);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = incomeService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Income deleted successfully.")) :

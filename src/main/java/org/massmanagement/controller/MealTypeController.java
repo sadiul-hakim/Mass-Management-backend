@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.MealType;
 import org.massmanagement.service.MealTypeService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,27 +13,28 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/meal-type/v1")
 @RequiredArgsConstructor
-public class MealTypeController {
+class MealTypeController {
     private final MealTypeService mealTypeService;
-    @PostMapping("/add")
+
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody MealType mealType) {
         var savedType = mealTypeService.save(mealType);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedType);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getById(@PathVariable long id) {
         var mealType = mealTypeService.getById(id);
         return ResponseEntity.ok(mealType);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         var mealTypeList = mealTypeService.getAll();
         return ResponseEntity.ok(mealTypeList);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = mealTypeService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "Meal Type deleted successfully.")) :

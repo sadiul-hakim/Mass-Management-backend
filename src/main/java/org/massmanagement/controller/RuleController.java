@@ -3,6 +3,7 @@ package org.massmanagement.controller;
 import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Rule;
 import org.massmanagement.service.RuleService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,24 +13,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/rule/v1")
 @RequiredArgsConstructor
-public class RuleController {
+class RuleController {
     private final RuleService ruleService;
 
-    @GetMapping("/get-all")
-    public ResponseEntity<?> getAll(){
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAll() {
         List<Rule> ruleList = ruleService.getAll();
         return ResponseEntity.ok(ruleList);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody Rule rule){
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> add(@RequestBody Rule rule) {
         Rule save = ruleService.save(rule);
         return ResponseEntity.ok(save);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable long id){
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = ruleService.delete(id);
-        return ResponseEntity.ok(Collections.singletonMap("message","Rule deleted successfully!"));
+        return ResponseEntity.ok(Collections.singletonMap("message", "Rule deleted successfully!"));
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.service.UserRoleService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,33 +13,34 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/user-role/v1")
 @RequiredArgsConstructor
-public class UserRoleController {
+class UserRoleController {
     private final UserRoleService userRoleService;
-    @PostMapping("/add")
+
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody UserRole role) {
         var saved = userRoleService.save(role);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getById(@PathVariable long id) {
         var role = userRoleService.getById(id);
         return ResponseEntity.ok(role);
     }
 
-    @GetMapping("/get-by-role/{role}")
+    @GetMapping(value = "/get-by-role/{role}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getByName(@PathVariable String role) {
         var roleModel = userRoleService.getByRole(role);
         return ResponseEntity.ok(roleModel);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         var roleList = userRoleService.getAll();
         return ResponseEntity.ok(roleList);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = userRoleService.delete(id);
         return deleted ? ResponseEntity.ok(Collections.singletonMap("message", "User Role deleted successfully.")) :
