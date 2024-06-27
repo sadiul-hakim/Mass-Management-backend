@@ -43,7 +43,7 @@ public class UserService {
                 user.getPhone().isEmpty() || user.getEmail().isEmpty()
                 || user.getPassword().isEmpty() || user.getStatus() == 0) {
             log.warn("Invalid user {}", user);
-            return null;
+            return new UserDTO();
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -180,7 +180,7 @@ public class UserService {
     }
 
     public UserDTO convertToDTO(User user) {
-        if (user == null || user.getId() == 0) return null;
+        if (user == null || user.getId() == 0) return new UserDTO();
 
         var status = userStatusService.getById(user.getStatus());
 

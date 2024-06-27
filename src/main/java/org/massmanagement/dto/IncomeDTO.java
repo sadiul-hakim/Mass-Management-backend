@@ -5,4 +5,8 @@ import org.massmanagement.model.TransactionType;
 
 public record IncomeDTO(long id, TransactionType type,
                         UserDTO user, long amount, String date) {
+
+    public IncomeDTO() {
+        this(0, null, null, 0, "");
+    }
 }

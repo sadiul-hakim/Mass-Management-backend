@@ -5,4 +5,8 @@ public record ChangePasswordDTO(
         String newPassword,
         String confirmPassword
 ) {
+
+    public ChangePasswordDTO() {
+        this("", "", "");
+    }
 }

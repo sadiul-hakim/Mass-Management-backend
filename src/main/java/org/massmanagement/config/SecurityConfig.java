@@ -53,7 +53,7 @@ class SecurityConfig {
                     c.configurationSource(source);
                 })
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/security/v1/validate-token").permitAll())
-                .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("MANAGER"))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new CustomAuthenticationFilter(authenticationProvider()))

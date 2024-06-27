@@ -25,13 +25,13 @@ public class MealTypeService {
         if (mealType.getName().isEmpty()) {
             log.warn("Invalid meal type!");
             log.info(mealType.toString());
-            return null;
+            return new MealType();
         }
 
         Optional<MealType> type = mealTypeRepo.findByName(mealType.getName());
         if (type.isPresent()) {
             log.warn("Meal Type already exists!");
-            return null;
+            return new MealType();
         }
 
         clearCache();

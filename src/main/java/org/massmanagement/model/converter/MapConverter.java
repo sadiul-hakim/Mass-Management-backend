@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class MapConverter implements AttributeConverter<Map<String,Long>,String>
             return mapper.writeValueAsString(attribute);
         }catch (Exception ex){
             log.error("Error occurred. Cause {}",ex.getMessage());
-            return null;
+            return "";
         }
     }
 
@@ -31,7 +32,7 @@ public class MapConverter implements AttributeConverter<Map<String,Long>,String>
             });
         }catch (Exception ex){
             log.error("Error occurred. Cause {}",ex.getMessage());
-            return null;
+            return Collections.emptyMap();
         }
     }
 }

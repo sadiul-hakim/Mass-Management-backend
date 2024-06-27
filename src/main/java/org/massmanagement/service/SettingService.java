@@ -15,12 +15,13 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class SettingService {
     private final SettingRepo settingRepo;
-    public Setting save(Setting setting){
-        try{
+
+    public Setting save(Setting setting) {
+        try {
             log.info("Saving setting.");
 
             Setting existingSetting = getByName(setting.getName());
-            if(existingSetting == null){
+            if (existingSetting == null) {
                 log.error("Setting does not exists.");
                 return settingRepo.save(setting);
             }
@@ -29,24 +30,24 @@ public class SettingService {
             existingSetting.setExcludeTransactionTypes(setting.getExcludeTransactionTypes());
             existingSetting.setBillTypes(setting.getBillTypes());
             return settingRepo.save(existingSetting);
-        }catch (Exception ex){
-            log.error("Error occurred while saving setting. Cause {}",ex.getMessage());
-            return null;
+        } catch (Exception ex) {
+            log.error("Error occurred while saving setting. Cause {}", ex.getMessage());
+            return new Setting();
         }
     }
 
     @Cacheable("SettingService:getByName")
-    public Setting getByName(String name){
-        log.info("Getting setting by name {}",name);
-        return settingRepo.findByName(name).orElse(null);
+    public Setting getByName(String name) {
+        log.info("Getting setting by name {}", name);
+        return settingRepo.findByName(name).orElse(new Setting());
     }
 
-    public boolean deleteSetting(String name){
-        try{
-            log.info("Deleting setting {}",name);
+    public boolean deleteSetting(String name) {
+        try {
+            log.info("Deleting setting {}", name);
 
             Setting setting = getByName(name);
-            if(setting == null){
+            if (setting == null) {
                 log.info("Setting does not exists.");
                 return false;
             }
@@ -57,14 +58,14 @@ public class SettingService {
 
             var saved = save(setting);
             return saved.getProperties().isEmpty();
-        }catch (Exception ex){
-            log.error("Error occurred while deleting setting : {}",ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Error occurred while deleting setting : {}", ex.getMessage());
             return false;
         }
     }
 
-    public boolean isInvalid(Setting setting){
-        if(setting == null || setting.getProperties().isEmpty())
+    public boolean isInvalid(Setting setting) {
+        if (setting == null || setting.getProperties().isEmpty())
             return false;
 
         return setting.getProperties().values().stream().anyMatch(value -> value == 0);

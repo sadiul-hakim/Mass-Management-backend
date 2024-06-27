@@ -10,4 +10,8 @@ public record MealPlanDTO(
         Period period,
         String date
 ) {
+
+    public MealPlanDTO() {
+        this(0, "", null, "");
+    }
 }

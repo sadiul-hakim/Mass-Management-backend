@@ -26,7 +26,7 @@ public class TransactionTypeService {
         if (transactionType.getTitle().isEmpty()) {
             log.warn("Invalid type!");
             log.info(transactionType.toString());
-            return null;
+            return new TransactionType();
         }
 
         clearCache();

@@ -33,7 +33,7 @@ public class MealService {
 
         if (meal.getAmount() < 0) {
             log.warn("Meal amount can not be 0 or less");
-            return null;
+            return new MealDTO();
         }
 
         // If the meal type is off. we need to set default period's meal amount
@@ -47,7 +47,7 @@ public class MealService {
         if (meal.getAmount() == 0 || meal.getType() == 0 || meal.getPeriod() == 0 || meal.getUserId() == 0) {
             log.warn("Trying to save invalid meal!");
             log.info(meal.toString());
-            return null;
+            return new MealDTO();
         }
         return convertToDTO(mealRepo.save(meal));
     }
@@ -222,6 +222,8 @@ public class MealService {
     }
 
     public MealDTO convertToDTO(Meal meal) {
+        if (meal == null) return new MealDTO();
+
         var user = userService.getById(meal.getUserId());
         var type = mealTypeService.getById(meal.getType());
         var period = periodService.getById(meal.getPeriod());

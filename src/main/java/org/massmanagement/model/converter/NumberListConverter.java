@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +22,7 @@ public class NumberListConverter implements AttributeConverter<List<Long>,String
             return mapper.writeValueAsString(attribute);
         }catch (Exception ex){
             log.error("Error occurred. Cause {}",ex.getMessage());
-            return null;
+            return "";
         }
     }
 
@@ -32,7 +33,7 @@ public class NumberListConverter implements AttributeConverter<List<Long>,String
             });
         }catch (Exception ex){
             log.error("Error occurred. Cause {}",ex.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 }

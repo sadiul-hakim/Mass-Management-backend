@@ -22,7 +22,7 @@ public class RuleService {
 
         if(rule.getRule().isEmpty()){
             log.info("Can not save empty rule!");
-            return null;
+            return new Rule();
         }
         rule.setDate(new Timestamp(System.currentTimeMillis()));
 

@@ -23,7 +23,7 @@ public class CostService {
         if (cost.getType() == 0 || cost.getAmount() == 0) {
             log.warn("Trying to save invalid cost!");
             log.info(cost.toString());
-            return null;
+            return new Cost();
         }
         return costRepo.save(cost);
     }
@@ -94,7 +94,7 @@ public class CostService {
     }
 
     public CostDTO convertToDTO(Cost cost) {
-        if (cost == null) return null;
+        if (cost == null) return new CostDTO();
         var transactionType = transactionTypeService.getById(cost.getType());
         return new CostDTO(cost.getId(),
                 transactionType,

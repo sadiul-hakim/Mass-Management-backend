@@ -28,13 +28,13 @@ public class PeriodService {
         if (period.getName().isEmpty()) {
             log.warn("Invalid period!");
             log.info(period.toString());
-            return null;
+            return new Period();
         }
 
         Optional<Period> existingPeriod = periodRepo.findByPeriodOrderOrName(period.getPeriodOrder(), period.getName());
         if (existingPeriod.isPresent()) {
             log.warn("Period with this order already exists!");
-            return null;
+            return new Period();
         }
 
         clearCache();

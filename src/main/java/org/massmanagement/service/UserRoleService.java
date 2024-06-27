@@ -23,13 +23,13 @@ public class UserRoleService {
         log.info("Saving user role : {}", userRole);
 
         if (userRole == null || userRole.getRole().isEmpty()) {
-            return null;
+            return new RoleDTO();
         }
 
         RoleDTO role = getByRole("ROLE_" + userRole.getRole().toUpperCase());
         if (role.id() != 0) {
             log.warn("Role already exists!");
-            return null;
+            return new RoleDTO();
         }
 
         userRole.setRole(userRole.getRole().toUpperCase());

@@ -2,12 +2,9 @@ package org.massmanagement.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.model.Income;
-import org.massmanagement.model.TransactionType;
 import org.massmanagement.repository.IncomeRepo;
-import org.massmanagement.repository.UserRepo;
 import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +25,7 @@ public class IncomeService {
         if (income.getAmount() == 0 || income.getType() == 0 || income.getUserId() == 0) {
             log.warn("Trying to save invalid income!");
             log.info(income.toString());
-            return null;
+            return new IncomeDTO();
         }
 
         return convertToDTO(incomeRepo.save(income));
@@ -116,6 +113,8 @@ public class IncomeService {
     }
 
     public IncomeDTO convertToDTO(Income income) {
+        if (income == null) new IncomeDTO();
+
         var transactionType = transactionTypeService.getById(income.getType());
         var user = userService.getById(income.getUserId());
 

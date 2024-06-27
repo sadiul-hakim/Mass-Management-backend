@@ -23,13 +23,13 @@ public class UserStatusService {
 
         if (userStatus.getStatus().isEmpty()) {
             log.warn("Invalid User Status {}", userStatus);
-            return null;
+            return new UserStatus();
         }
 
         UserStatus status = getByStatus(userStatus.getStatus());
         if(status.getId() != 0){
             log.warn("Status already exists!");
-            return null;
+            return new UserStatus();
         }
 
         clearCache();
