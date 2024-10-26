@@ -37,29 +37,24 @@ public class PeriodService {
             return new Period();
         }
 
-        clearCache();
         return periodRepo.save(period);
     }
 
-    @Cacheable("Period:getById")
     public Period getById(long id) {
         log.info("Getting period by id : {}", id);
         return periodRepo.findById(id).orElse(new Period());
     }
 
-    @Cacheable("Period:getByOrder")
     public Period getByOrder(long order) {
         log.info("Getting period by order : {}", order);
         return periodRepo.findPeriodByPeriodOrder(order).orElse(new Period());
     }
 
-    @Cacheable("Period:getAll")
     public List<Period> getAll() {
         log.info("Getting all periods.");
         return periodRepo.findAll();
     }
 
-    @Cacheable("Period:count")
     public long count() {
         log.info("Counting periods.");
         return periodRepo.count();
@@ -80,10 +75,5 @@ public class PeriodService {
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    @CacheEvict(value = {"Period:getById", "Period:getAll", "Period:count", "Period:getByOrder"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all Period Cache!");
     }
 }

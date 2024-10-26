@@ -33,7 +33,7 @@ public class AlertService {
                 StringBuilder message = new StringBuilder();
                 Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
                 long managerRoleId = setting.getProperty(SettingParameter.USER_ROLE_MANGER);
-                Optional<User> manager = userService.getAllByRole(managerRoleId).stream().findFirst();
+                Optional<User> manager = userService.getAllModelByRole(managerRoleId).stream().findFirst();
 
                 if (manager.isEmpty())
                     return;

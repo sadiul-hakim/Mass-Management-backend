@@ -25,12 +25,9 @@ public class RuleService {
             return new Rule();
         }
         rule.setDate(new Timestamp(System.currentTimeMillis()));
-
-        clearCache();
         return ruleRepository.save(rule);
     }
 
-    @Cacheable("Rule:getAll")
     public List<Rule> getAll() {
         log.info("Getting all rules.");
         return ruleRepository.findAll();
@@ -40,10 +37,5 @@ public class RuleService {
         log.info("Deleting rule {}", id);
         ruleRepository.deleteById(id);
         return true;
-    }
-
-    @CacheEvict(value = {"Rule:getAll"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all Role Cache!");
     }
 }

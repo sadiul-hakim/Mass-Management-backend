@@ -29,23 +29,19 @@ public class TransactionTypeService {
             return new TransactionType();
         }
 
-        clearCache();
         return transactionTypeRepo.save(transactionType);
     }
 
-    @Cacheable("TransactionType:getById")
     public TransactionType getById(long id) {
         log.info("Getting transaction type by id : {}", id);
         return transactionTypeRepo.findById(id).orElse(new TransactionType());
     }
 
-    @Cacheable("TransactionType:getByTitle")
     public TransactionType getByTitle(String title) {
         log.info("Getting transaction type by name : {}", title);
         return transactionTypeRepo.findByTitle(title).orElse(new TransactionType());
     }
 
-    @Cacheable("TransactionType:getAll")
     public List<TransactionType> getAll() {
         log.info("Getting all transaction types.");
         return transactionTypeRepo.findAll();
@@ -66,10 +62,5 @@ public class TransactionTypeService {
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    @CacheEvict(value = {"TransactionType:getById", "TransactionType:getByTitle", "TransactionType:getAll"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all Transaction Type Cache!");
     }
 }

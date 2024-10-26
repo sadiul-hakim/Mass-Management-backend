@@ -32,11 +32,9 @@ public class UserStatusService {
             return new UserStatus();
         }
 
-        clearCache();
         return userStatusRepo.save(userStatus);
     }
 
-    @Cacheable("UserStatus:getById")
     public UserStatus getById(long id) {
         log.info("Getting user status by id : {}", id);
         return userStatusRepo.findById(id).orElse(new UserStatus());
@@ -47,7 +45,6 @@ public class UserStatusService {
         return userStatusRepo.findByStatus(status).orElse(new UserStatus());
     }
 
-    @Cacheable("UserStatus:getAll")
     public List<UserStatus> getAll() {
         log.info("Getting all user status.");
         return userStatusRepo.findAll();
@@ -68,10 +65,5 @@ public class UserStatusService {
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    @CacheEvict(value = {"UserStatus:getById", "UserStatus:getAll"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all User Status Cache!");
     }
 }

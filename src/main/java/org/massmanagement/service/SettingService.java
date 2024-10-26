@@ -21,7 +21,7 @@ public class SettingService {
             log.info("Saving setting.");
 
             Setting existingSetting = getByName(setting.getName());
-            if (existingSetting == null) {
+            if (existingSetting == null || existingSetting.getId() == 0) {
                 log.error("Setting does not exists.");
                 return settingRepo.save(setting);
             }
@@ -36,7 +36,6 @@ public class SettingService {
         }
     }
 
-    @Cacheable("SettingService:getByName")
     public Setting getByName(String name) {
         log.info("Getting setting by name {}", name);
         return settingRepo.findByName(name).orElse(new Setting());

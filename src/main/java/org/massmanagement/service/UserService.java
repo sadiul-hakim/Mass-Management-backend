@@ -122,7 +122,7 @@ public class UserService {
         return allUsers.stream().map(this::convertToDTO).toList();
     }
 
-    public List<User> getAllByRole(long role) {
+    public List<User> getAllModelByRole(long role) {
         log.info("Getting total number of user by role.");
 
         var userRole = userRoleRepo.findById(role).orElse(null);

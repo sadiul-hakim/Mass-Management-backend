@@ -40,18 +40,15 @@ public class UserRoleService {
 
         var saved = userRoleRepo.save(userRole);
 
-        clearCache();
         return convertToDTO(saved);
     }
 
-    @Cacheable("UseRole:getById")
     public RoleDTO getById(long id) {
         log.info("Getting user role by id : {}", id);
         var role = userRoleRepo.findById(id).orElse(new UserRole());
         return convertToDTO(role);
     }
 
-    @Cacheable("UseRole:getByRole")
     public RoleDTO getByRole(String role) {
         log.info("Getting user role by role name : {}", role);
 
@@ -67,7 +64,20 @@ public class UserRoleService {
         return convertToDTO(roleModel);
     }
 
-    @Cacheable("UseRole:getAll")
+    public UserRole getModelByRole(String role) {
+        log.info("Getting user role model by role name : {}", role);
+
+        if (role.isEmpty()) return new UserRole();
+
+        role = role.toUpperCase();
+
+        if (!role.startsWith("ROLE_")) {
+            role = "ROLE_".concat(role);
+        }
+
+        return userRoleRepo.findByRole(role).orElse(new UserRole());
+    }
+
     public List<RoleDTO> getAll() {
         log.info("Getting all user roles.");
         var all = userRoleRepo.findAll();
@@ -94,12 +104,7 @@ public class UserRoleService {
     }
 
     public RoleDTO convertToDTO(UserRole userRole) {
-        if (userRole == null) return new RoleDTO();
+        if (userRole == null || userRole.getId() == 0) return new RoleDTO();
         return new RoleDTO(userRole.getId(), userRole.getRole().replace("ROLE_", ""), userRole.getDescription());
-    }
-
-    @CacheEvict(value = {"UseRole:getById", "UseRole:getByRole", "UseRole:getAll"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all User Role Cache!");
     }
 }

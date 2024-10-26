@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<User,Long> {
     List<User> findByRole(UserRole role);
-    @Query(value = "SELECT COUNT(*) FROM USER where status = :status",nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM user where status = :status",nativeQuery = true)
     long findCountOfActiveUser(@Param("status") long status);
     @Query(value = "select id from USER",nativeQuery = true)
     List<Long> findAllNames();

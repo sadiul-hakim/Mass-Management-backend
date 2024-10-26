@@ -34,17 +34,14 @@ public class MealTypeService {
             return new MealType();
         }
 
-        clearCache();
         return mealTypeRepo.save(mealType);
     }
 
-    @Cacheable("MealType:getById")
     public MealType getById(long id) {
         log.info("Getting meal type by id : {}", id);
         return mealTypeRepo.findById(id).orElse(new MealType());
     }
 
-    @Cacheable("MealType:getAll")
     public List<MealType> getAll() {
         log.info("Getting all meal types.");
         return mealTypeRepo.findAll();
@@ -65,10 +62,5 @@ public class MealTypeService {
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    @CacheEvict(value = {"MealType:getById", "MealType:getAll"}, allEntries = true)
-    public void clearCache() {
-        log.info("Cleared all MealType Cache!");
     }
 }
