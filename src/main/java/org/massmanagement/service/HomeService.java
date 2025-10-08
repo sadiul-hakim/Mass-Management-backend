@@ -34,12 +34,12 @@ public class HomeService {
 
         try {
             Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-            UserStatus active = userStatusService.getById(setting.getProperty(SettingParameter.USER_STATUS_ACTIVE));
+            UserStatus active = userStatusService.getById(setting.getPropertyLong(SettingParameter.USER_STATUS_ACTIVE));
 
             var activeStatus = userStatusService.getByStatus(active.getStatus());
 
             Map<String, Long> totals = new HashMap<>();
-            long deposit = incomeService.getSumByType(setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
+            long deposit = incomeService.getSumByType(setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
             long income = incomeService.getTotalAmount();
             long cost = costService.getTotalAmount();
             long activeUsers = userService.countByStatus(activeStatus.getId());
@@ -83,7 +83,7 @@ public class HomeService {
                 info.put("bills", bills);
 
                 // Put deposit in info man
-                long depositType = setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT);
+                long depositType = setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT);
                 var deposit = transactionTypeService.getById(depositType);
                 long sumOfDeposit = incomeService.getSumOfAmountByUserAndType(user.getId(), depositType);
 

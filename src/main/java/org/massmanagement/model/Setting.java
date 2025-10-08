@@ -2,6 +2,8 @@ package org.massmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.massmanagement.model.converter.MapConverter;
 import org.massmanagement.model.converter.NumberListConverter;
 
@@ -24,23 +26,45 @@ public class Setting {
     private String name;
 
     @Convert(converter = MapConverter.class)
-    @Column(columnDefinition = "JSON")
-    private Map<String,Long> properties = new HashMap<>();
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> properties = new HashMap<>();
 
     @Convert(converter = NumberListConverter.class)
-    @Column(columnDefinition = "JSON")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private List<Long> excludeTransactionTypes = new ArrayList<>();
 
     @Convert(converter = NumberListConverter.class)
-    @Column(columnDefinition = "JSON")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private List<Long> billTypes = new ArrayList<>();
 
-    public long getProperty(String name){
+    public long getPropertyLong(String name) {
 
-        if(name.isEmpty() || !properties.containsKey(name)){
+        if (name.isEmpty() || !properties.containsKey(name)) {
             return 0;
         }
 
-        return properties.get(name);
+        Object obj = properties.get(name);
+        if (obj instanceof Number number) {
+            return number.longValue();
+        }
+
+        return 0;
+    }
+
+    public String getPropertyString(String name) {
+
+        if (name.isEmpty() || !properties.containsKey(name)) {
+            return "";
+        }
+
+        Object obj = properties.get(name);
+        if (obj instanceof String text) {
+            return text;
+        }
+
+        return "";
     }
 }

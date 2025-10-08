@@ -6,8 +6,6 @@ import org.massmanagement.dto.RoleDTO;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

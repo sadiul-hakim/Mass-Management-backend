@@ -6,8 +6,6 @@ import org.massmanagement.model.TransactionType;
 import org.massmanagement.repository.CostRepo;
 import org.massmanagement.repository.IncomeRepo;
 import org.massmanagement.repository.TransactionTypeRepo;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

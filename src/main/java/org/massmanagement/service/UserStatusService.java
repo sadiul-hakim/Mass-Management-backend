@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserStatusRepo;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

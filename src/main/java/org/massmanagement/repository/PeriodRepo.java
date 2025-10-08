@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface PeriodRepo extends JpaRepository<Period, Long> {
-    @Query(value = "select count(*) from Period")
-    long findCountOfPeriod();
-
     Optional<Period> findByPeriodOrderOrName(int periodOrder,String name);
     Optional<Period> findPeriodByPeriodOrder(long order);
 }

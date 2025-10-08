@@ -9,7 +9,6 @@ import org.massmanagement.util.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -68,11 +67,6 @@ public class IncomeService {
             log.error("Error occurred in getTotalAmount() : cause {}", ex.getMessage());
             return 0L;
         }
-    }
-
-    public Set<Long> countTypes() {
-        log.info("Getting types in income.");
-        return incomeRepo.findCountOfType();
     }
 
     public long getSumOfAmountByUserAndType(long user, long type) {

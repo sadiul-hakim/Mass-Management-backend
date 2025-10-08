@@ -38,7 +38,7 @@ public class MealService {
 
         // If the meal type is off. we need to set default period's meal amount
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-        if (setting.getProperty(SettingParameter.MEAL_TYPE_OFF) == meal.getType()) {
+        if (setting.getPropertyLong(SettingParameter.MEAL_TYPE_OFF) == meal.getType()) {
 
             Period period = periodService.getById(meal.getPeriod());
             meal.setAmount(period.getMeal());
@@ -56,7 +56,7 @@ public class MealService {
         log.info("Saving meal : {}", mealInRange);
 
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-        long offType = setting.getProperty(SettingParameter.MEAL_TYPE_OFF);
+        long offType = setting.getPropertyLong(SettingParameter.MEAL_TYPE_OFF);
 
         if ((mealInRange.getType() != offType && mealInRange.getAmount() == 0) || mealInRange.getType() == 0 || mealInRange.getUserId() == 0) {
             log.warn("Trying to save invalid meal!");
@@ -141,7 +141,7 @@ public class MealService {
         List<Meal> meals = new ArrayList<>();
 
         Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-        long offType = setting.getProperty(SettingParameter.MEAL_TYPE_OFF);
+        long offType = setting.getPropertyLong(SettingParameter.MEAL_TYPE_OFF);
         LocalDateTime startDateCopy = startDate;
         while (startDateCopy.isBefore(endDate)) {
             Meal meal;
@@ -182,10 +182,10 @@ public class MealService {
                 List<Double> mealsStatus = daySheet.get(String.valueOf(localDate.getDayOfMonth()));
                 if (mealsStatus == null) continue;
 
-                if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
+                if (meal.type().getId() == setting.getPropertyLong(SettingParameter.MEAL_TYPE_OFF)) {
                     Double status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
                     mealsStatus.set(meal.period().getPeriodOrder() - 1, status - meal.amount());
-                } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {
+                } else if (meal.type().getId() == setting.getPropertyLong(SettingParameter.MEAL_TYPE_EXTRA)) {
                     Double status = mealsStatus.get(meal.period().getPeriodOrder() - 1);
                     mealsStatus.set(meal.period().getPeriodOrder() - 1, status + meal.amount());
                 }

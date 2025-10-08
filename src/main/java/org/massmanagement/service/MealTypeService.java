@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.MealType;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.repository.MealTypeRepo;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

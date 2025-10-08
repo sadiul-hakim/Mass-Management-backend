@@ -19,6 +19,6 @@ public class ReportModel {
     private long id;
 
     @Convert(converter = ReportConverter.class)
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "jsonb")
     private Map<String, Object> report;
 }

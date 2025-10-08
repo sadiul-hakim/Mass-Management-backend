@@ -45,10 +45,10 @@ public class ReportService {
         report.put("total_income", income);
         report.put("total_cost", cost);
 
-        long market = costService.getSumByType(setting.getProperty(SettingParameter.TRANSACTION_TYPE_MARKET));
+        long market = costService.getSumByType(setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_MARKET));
         report.put("market", market);
 
-        long deposit = incomeService.getSumByType(setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
+        long deposit = incomeService.getSumByType(setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
         report.put("deposit", deposit);
 
         var users = userService.getAll();
@@ -85,7 +85,7 @@ public class ReportService {
             userInfo.put("border", userData);
 
             double meals;
-            long fixedMeal = setting.getProperty(SettingParameter.NUMBER_OF_FIXED_MEAL);
+            long fixedMeal = setting.getPropertyLong(SettingParameter.NUMBER_OF_FIXED_MEAL);
             if (user.status().getStatus().equalsIgnoreCase("Active")) {
                 meals = singleUserMeals();
                 meals = removeOffAndAddExtras(meals, user.id(), setting);
@@ -116,7 +116,7 @@ public class ReportService {
             mealCost += singleBorderOtherCost;
             userInfo.put("total_cost", format(mealCost, "0.00"));
 
-            long deposit = incomeService.getSumOfAmountByUserAndType(user.id(), setting.getProperty(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
+            long deposit = incomeService.getSumOfAmountByUserAndType(user.id(), setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_BORDER_DEPOSIT));
             userInfo.put("deposit", deposit);
 
             var balance = deposit - mealCost;
@@ -130,7 +130,7 @@ public class ReportService {
 
     private double calculateMealRate(Map<String, Object> report, Setting setting) {
 
-        long marketTypeId = setting.getProperty(SettingParameter.TRANSACTION_TYPE_MARKET);
+        long marketTypeId = setting.getPropertyLong(SettingParameter.TRANSACTION_TYPE_MARKET);
         if (marketTypeId == 0) return 0.0;
 
         long totalMarketCost = costService.getSumByType(marketTypeId);
@@ -144,7 +144,7 @@ public class ReportService {
 
         double singlePersonMeals = singleUserMeals();
 
-        long totalUsers = userService.countByStatus(setting.getProperty(SettingParameter.USER_STATUS_ACTIVE));
+        long totalUsers = userService.countByStatus(setting.getPropertyLong(SettingParameter.USER_STATUS_ACTIVE));
         report.put("total_borders", totalUsers);
 
         var totalMeals = singlePersonMeals * totalUsers;
@@ -190,9 +190,9 @@ public class ReportService {
                 continue;
             }
 
-            if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_OFF)) {
+            if (meal.type().getId() == setting.getPropertyLong(SettingParameter.MEAL_TYPE_OFF)) {
                 singlePersonMeals -= meal.amount();
-            } else if (meal.type().getId() == setting.getProperty(SettingParameter.MEAL_TYPE_EXTRA)) {
+            } else if (meal.type().getId() == setting.getPropertyLong(SettingParameter.MEAL_TYPE_EXTRA)) {
                 singlePersonMeals += meal.amount();
             }
         }

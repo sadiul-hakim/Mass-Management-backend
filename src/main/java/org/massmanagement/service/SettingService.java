@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Setting;
 import org.massmanagement.repository.SettingRepo;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -67,6 +66,18 @@ public class SettingService {
         if (setting == null || setting.getProperties().isEmpty())
             return false;
 
-        return setting.getProperties().values().stream().anyMatch(value -> value == 0);
+        return setting.getProperties().values().stream()
+                .anyMatch(value -> {
+                    if (value == null) return true;
+
+                    return switch (value) {
+                        case Long l -> l == 0L;
+                        case Integer i -> i == 0;
+                        case Double d -> d == 0.0;
+                        case Float f -> f == 0.0f;
+                        case String s -> s.isEmpty();
+                        default -> false;
+                    };
+                });
     }
 }

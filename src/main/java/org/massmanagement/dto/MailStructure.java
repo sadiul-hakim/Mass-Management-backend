@@ -1,7 +1,10 @@
 package org.massmanagement.dto;
 
-public record MailStructure(String subject, String mail) {
+import java.util.ArrayList;
+import java.util.List;
+
+public record MailStructure(String subject, String mailText, List<String> toMails) {
     public MailStructure() {
-        this("", "");
+        this("", "", new ArrayList<>());
     }
 }

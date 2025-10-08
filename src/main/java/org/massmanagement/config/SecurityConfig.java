@@ -1,6 +1,5 @@
 package org.massmanagement.config;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.security.CustomAuthenticationFilter;
 import org.massmanagement.security.CustomAuthorizationFilter;
 import org.massmanagement.service.CustomUserDetailsService;
@@ -25,13 +24,17 @@ import java.util.List;
 
 @Configuration
 @EnableCaching
-@RequiredArgsConstructor
 @EnableWebSecurity
 class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomAuthorizationFilter customAuthorizationFilter;
     @Value("${mass-management.ui.url}")
     private String massManagementUi;
+
+    SecurityConfig(CustomUserDetailsService userDetailsService, CustomAuthorizationFilter customAuthorizationFilter) {
+        this.userDetailsService = userDetailsService;
+        this.customAuthorizationFilter = customAuthorizationFilter;
+    }
 
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
@@ -65,9 +68,8 @@ class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(userDetailsService);
 
         return authenticationProvider;
     }

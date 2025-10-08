@@ -14,7 +14,6 @@ import java.util.function.Function;
 public class JwtHelper {
     private static final String SECRET = "VxRfBGJFviiO62cg/M0YY5WypcyvtUUjfkI5aDJgwt4dLz6BQKuaKChKyn+Ulhz+";
 
-
     public static String generateToken(UserDetails userDetails, Map<String, Object> extraClaims, long expirationDate) {
 
         return Jwts.builder()

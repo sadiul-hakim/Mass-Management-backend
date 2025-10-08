@@ -10,4 +10,5 @@ public class SettingParameter {
     public static final String NUMBER_OF_FIXED_MEAL = "numberOfFixedMeal";
     public static final String USER_ROLE_BORDER = "UserRoleBorder";
     public static final String USER_ROLE_MANGER = "UserRoleManager";
+    public static final String TINYMCE_KEY = "TINYMCE_KEY";
 }

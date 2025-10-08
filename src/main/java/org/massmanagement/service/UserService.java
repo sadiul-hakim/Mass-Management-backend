@@ -148,7 +148,7 @@ public class UserService {
             if (user.isEmpty()) return false;
 
             Setting setting = settingService.getByName(SettingParameter.ENTRY_NAME);
-            long activeUser = setting.getProperty(SettingParameter.USER_STATUS_ACTIVE);
+            long activeUser = setting.getPropertyLong(SettingParameter.USER_STATUS_ACTIVE);
             if (user.get().getStatus() != activeUser) {
                 throw new RuntimeException("The user you are trying to make Manager is Inactive.");
             }

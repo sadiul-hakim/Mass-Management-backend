@@ -16,14 +16,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 class HomeController {
     private final HomeService homeService;
-    @GetMapping(value = "/totals",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getTotals(){
+
+    @GetMapping(value = "/totals", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getTotals() {
         Map<String, Long> totals = homeService.getTotals();
         return ResponseEntity.ok(totals);
     }
 
-    @GetMapping(value = "/border-info",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getBorderInfo(){
+    @GetMapping(value = "/border-info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getBorderInfo() {
         List<Map<String, Object>> info = homeService.borderInformation();
         return ResponseEntity.ok(info);
     }

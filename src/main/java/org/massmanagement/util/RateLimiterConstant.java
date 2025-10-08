@@ -1,6 +1,6 @@
-package org.massmanagement.controller;
+package org.massmanagement.util;
 
-class RateLimiterConstant {
+public class RateLimiterConstant {
     private RateLimiterConstant() {
     }
 
