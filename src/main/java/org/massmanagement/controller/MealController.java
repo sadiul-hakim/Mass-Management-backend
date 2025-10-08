@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Meal;
 import org.massmanagement.model.MealInRange;
 import org.massmanagement.service.MealService;
@@ -15,9 +14,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/meal/v1")
-@RequiredArgsConstructor
 class MealController {
     private final MealService mealService;
+
+    MealController(MealService mealService) {
+        this.mealService = mealService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody Meal meal) {

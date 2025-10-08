@@ -1,22 +1,28 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.TransactionType;
 import org.massmanagement.repository.CostRepo;
 import org.massmanagement.repository.IncomeRepo;
 import org.massmanagement.repository.TransactionTypeRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class TransactionTypeService {
     private final TransactionTypeRepo transactionTypeRepo;
     private final IncomeRepo incomeRepo;
     private final CostRepo costRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(TransactionTypeService.class);
+
+    public TransactionTypeService(TransactionTypeRepo transactionTypeRepo, IncomeRepo incomeRepo, CostRepo costRepo) {
+        this.transactionTypeRepo = transactionTypeRepo;
+        this.incomeRepo = incomeRepo;
+        this.costRepo = costRepo;
+    }
 
     public TransactionType save(TransactionType transactionType) {
         log.info("Saving Transaction Type : {}", transactionType);

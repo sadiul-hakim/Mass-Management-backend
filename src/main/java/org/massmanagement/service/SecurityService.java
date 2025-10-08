@@ -2,17 +2,20 @@ package org.massmanagement.service;
 
 import org.massmanagement.dto.Token;
 import org.massmanagement.util.JwtHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class SecurityService {
     private final CustomUserDetailsService userDetailsService;
+
+    private static final Logger log = LoggerFactory.getLogger(SecurityService.class);
+
+    public SecurityService(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public boolean validateToken(Token token) {
 

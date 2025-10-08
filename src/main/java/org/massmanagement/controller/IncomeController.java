@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Income;
 import org.massmanagement.service.IncomeService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,13 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/income/v1")
-@RequiredArgsConstructor
 class IncomeController {
     private final IncomeService incomeService;
+
+    IncomeController(IncomeService incomeService) {
+        this.incomeService = incomeService;
+    }
+
     @PostMapping(value = "/add",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody Income income) {
         var saved = incomeService.save(income);

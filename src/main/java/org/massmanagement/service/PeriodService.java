@@ -1,23 +1,29 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Period;
 import org.massmanagement.repository.MealPlanRepo;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.repository.PeriodRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class PeriodService {
     private final PeriodRepo periodRepo;
     private final MealRepo mealRepo;
     private final MealPlanRepo mealPlanRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(PeriodService.class);
+
+    public PeriodService(PeriodRepo periodRepo, MealRepo mealRepo, MealPlanRepo mealPlanRepo) {
+        this.periodRepo = periodRepo;
+        this.mealRepo = mealRepo;
+        this.mealPlanRepo = mealPlanRepo;
+    }
 
     public Period save(Period period) {
         log.info("Saving period : {}", period);

@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.service.UserRoleService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/user-role/v1")
-@RequiredArgsConstructor
 class UserRoleController {
     private final UserRoleService userRoleService;
+
+    UserRoleController(UserRoleService userRoleService) {
+        this.userRoleService = userRoleService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody UserRole role) {

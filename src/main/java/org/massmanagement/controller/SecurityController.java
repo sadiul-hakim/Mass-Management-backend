@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.dto.Token;
 import org.massmanagement.service.SecurityService;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/security/v1")
-@RequiredArgsConstructor
 class SecurityController {
     private final SecurityService securityService;
+
+    SecurityController(SecurityService securityService) {
+        this.securityService = securityService;
+    }
 
     @PostMapping(value = "/validate-token", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> validateToken(@RequestBody Token token) {

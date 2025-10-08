@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Period;
 import org.massmanagement.service.PeriodService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/period/v1")
-@RequiredArgsConstructor
 class PeriodController {
     private final PeriodService periodService;
+
+    PeriodController(PeriodService periodService) {
+        this.periodService = periodService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody Period period) {

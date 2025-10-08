@@ -1,8 +1,6 @@
 package org.massmanagement.service;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.ChangePasswordDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.dto.UserUpdateDTO;
@@ -14,6 +12,8 @@ import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
 import org.massmanagement.util.DateFormatter;
 import org.massmanagement.util.SettingParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserRepo userRepo;
     private final UserRoleRepo userRoleRepo;
@@ -34,6 +32,17 @@ public class UserService {
     private final UserStatusService userStatusService;
     private final PasswordEncoder passwordEncoder;
     private final SettingService settingService;
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    public UserService(UserRepo userRepo, UserRoleRepo userRoleRepo, UserRoleService userRoleService, UserStatusService userStatusService, PasswordEncoder passwordEncoder, SettingService settingService) {
+        this.userRepo = userRepo;
+        this.userRoleRepo = userRoleRepo;
+        this.userRoleService = userRoleService;
+        this.userStatusService = userStatusService;
+        this.passwordEncoder = passwordEncoder;
+        this.settingService = settingService;
+    }
 
     public UserDTO save(User user) {
         log.info("Saving user : {}", user);

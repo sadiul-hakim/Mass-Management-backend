@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.service.UserStatusService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/user-status/v1")
-@RequiredArgsConstructor
 class UserStatusController {
     private final UserStatusService userStatusService;
+
+    UserStatusController(UserStatusService userStatusService) {
+        this.userStatusService = userStatusService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody UserStatus status) {

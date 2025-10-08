@@ -2,7 +2,7 @@
 <configuration>
 
     <!-- Set a Property that Contains the file path for the log files -->
-    <property name="DEV_HOME" value="C:/my-log/mass-management-logs"/>
+    <property name="DEV_HOME" value="/root/deployment/logs/mass-management-logs"/>
 
     <!-- Created an appender to display the logs in console window.-->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

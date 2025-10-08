@@ -1,16 +1,17 @@
 package org.massmanagement.util;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ResponseUtility {
+
+    private static final Logger log = LoggerFactory.getLogger(ResponseUtility.class);
+
     public static void commitResponse(HttpServletResponse response, Map<String,String> map, int status)  {
 
         try{

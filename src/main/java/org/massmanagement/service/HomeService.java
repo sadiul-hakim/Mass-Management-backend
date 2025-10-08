@@ -1,25 +1,18 @@
 package org.massmanagement.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.Setting;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.projection.UserProjection;
 import org.massmanagement.util.SettingParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class HomeService {
     private final IncomeService incomeService;
     private final CostService costService;
@@ -27,6 +20,18 @@ public class HomeService {
     private final TransactionTypeService transactionTypeService;
     private final UserStatusService userStatusService;
     private final SettingService settingService;
+
+    private static final Logger log = LoggerFactory.getLogger(HomeService.class);
+
+    public HomeService(IncomeService incomeService, CostService costService, UserService userService,
+                       TransactionTypeService transactionTypeService, UserStatusService userStatusService, SettingService settingService) {
+        this.incomeService = incomeService;
+        this.costService = costService;
+        this.userService = userService;
+        this.transactionTypeService = transactionTypeService;
+        this.userStatusService = userStatusService;
+        this.settingService = settingService;
+    }
 
     public Map<String, Long> getTotals() {
 

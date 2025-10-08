@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.MealPlan;
 import org.massmanagement.service.MealPlanService;
 import org.springframework.http.HttpStatus;
@@ -11,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/meal-plan/v1")
 class MealPlanController {
     private final MealPlanService mealPlanService;
+
+    MealPlanController(MealPlanService mealPlanService) {
+        this.mealPlanService = mealPlanService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody MealPlan mealPlan) {

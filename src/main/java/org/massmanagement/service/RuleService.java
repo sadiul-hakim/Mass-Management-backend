@@ -1,19 +1,23 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Rule;
 import org.massmanagement.repository.RuleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class RuleService {
     private final RuleRepository ruleRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(RuleService.class);
+
+    public RuleService(RuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
+    }
 
     public Rule save(Rule rule) {
         log.info("Saving rule {}", rule);

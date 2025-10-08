@@ -1,11 +1,11 @@
 package org.massmanagement.controller;
 
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Cost;
 import org.massmanagement.service.CostService;
 import org.massmanagement.util.RateLimiterConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
-@Slf4j
 @RestController
 @RequestMapping("/cost/v1")
-@RequiredArgsConstructor
 class CostController {
+
+    private static final Logger log = LoggerFactory.getLogger(CostController.class);
+
     private final CostService costService;
+
+    CostController(CostService costService) {
+        this.costService = costService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @RateLimiter(name = RateLimiterConstant.POST_REQUEST_RATE_LIMITER, fallbackMethod = "fallBack")

@@ -1,7 +1,5 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.MealDTO;
 import org.massmanagement.dto.UserDTO;
 import org.massmanagement.model.Meal;
@@ -11,6 +9,8 @@ import org.massmanagement.model.Setting;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.util.DateFormatter;
 import org.massmanagement.util.SettingParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -18,15 +18,24 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MealService {
     private final MealRepo mealRepo;
     private final UserService userService;
     private final MealTypeService mealTypeService;
     private final PeriodService periodService;
     private final SettingService settingService;
+
+    private static final Logger log = LoggerFactory.getLogger(MealService.class);
+
+    public MealService(MealRepo mealRepo, UserService userService, MealTypeService mealTypeService,
+                       PeriodService periodService, SettingService settingService) {
+        this.mealRepo = mealRepo;
+        this.userService = userService;
+        this.mealTypeService = mealTypeService;
+        this.periodService = periodService;
+        this.settingService = settingService;
+    }
 
     public MealDTO save(Meal meal) {
         log.info("Saving meal : {}", meal);

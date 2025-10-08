@@ -1,22 +1,28 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.IncomeDTO;
 import org.massmanagement.model.Income;
 import org.massmanagement.repository.IncomeRepo;
 import org.massmanagement.util.DateFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class IncomeService {
     private final IncomeRepo incomeRepo;
     private final TransactionTypeService transactionTypeService;
     private final UserService userService;
+
+    private static final Logger log = LoggerFactory.getLogger(IncomeService.class);
+
+    public IncomeService(IncomeRepo incomeRepo, TransactionTypeService transactionTypeService, UserService userService) {
+        this.incomeRepo = incomeRepo;
+        this.transactionTypeService = transactionTypeService;
+        this.userService = userService;
+    }
 
     public IncomeDTO save(Income income) {
         log.info("Saving income : {}", income);

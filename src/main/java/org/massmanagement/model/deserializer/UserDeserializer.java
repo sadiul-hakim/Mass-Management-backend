@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.User;
 import org.massmanagement.repository.UserRoleRepo;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class UserDeserializer extends JsonDeserializer<User> {
     private static final String ID = "id";
     private static final String NAME = "name";
@@ -24,6 +22,11 @@ public class UserDeserializer extends JsonDeserializer<User> {
     private static final String ROLE = "role";
     private static final String STATUS = "status";
     private final UserRoleRepo userRoleRepo;
+
+    public UserDeserializer(UserRoleRepo userRoleRepo) {
+        this.userRoleRepo = userRoleRepo;
+    }
+
     @Override
     public User deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         User user = new User();

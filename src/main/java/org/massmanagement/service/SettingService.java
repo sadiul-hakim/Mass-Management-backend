@@ -1,19 +1,23 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.Setting;
 import org.massmanagement.repository.SettingRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class SettingService {
     private final SettingRepo settingRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(SettingService.class);
+
+    public SettingService(SettingRepo settingRepo) {
+        this.settingRepo = settingRepo;
+    }
 
     public Setting save(Setting setting) {
         try {

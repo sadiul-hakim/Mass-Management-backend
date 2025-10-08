@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.Setting;
 import org.massmanagement.service.SettingService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/setting/v1")
-@RequiredArgsConstructor
 class SettingController {
     private final SettingService settingService;
+
+    SettingController(SettingService settingService) {
+        this.settingService = settingService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody Setting setting) {

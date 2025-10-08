@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.MealType;
 import org.massmanagement.service.MealTypeService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/meal-type/v1")
-@RequiredArgsConstructor
 class MealTypeController {
     private final MealTypeService mealTypeService;
+
+    MealTypeController(MealTypeService mealTypeService) {
+        this.mealTypeService = mealTypeService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody MealType mealType) {

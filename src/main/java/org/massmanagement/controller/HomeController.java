@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.service.HomeService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +12,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/home/v1")
-@RequiredArgsConstructor
 class HomeController {
     private final HomeService homeService;
+
+    HomeController(HomeService homeService) {
+        this.homeService = homeService;
+    }
 
     @GetMapping(value = "/totals", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getTotals() {

@@ -1,7 +1,6 @@
 package org.massmanagement.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.ReportModel;
 import org.massmanagement.service.ReportModelService;
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/monthly-report/v1")
 class ReportModelController {
     private final ReportModelService reportModelService;
+
+    ReportModelController(ReportModelService reportModelService) {
+        this.reportModelService = reportModelService;
+    }
 
     @PostMapping(value = "/add",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@RequestBody ReportModel reportModel) {

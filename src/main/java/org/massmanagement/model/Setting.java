@@ -1,7 +1,6 @@
 package org.massmanagement.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.massmanagement.model.converter.MapConverter;
@@ -12,11 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Setting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,5 +61,56 @@ public class Setting {
         }
 
         return "";
+    }
+
+    public Setting(long id, String name, Map<String, Object> properties, List<Long> excludeTransactionTypes, List<Long> billTypes) {
+        this.id = id;
+        this.name = name;
+        this.properties = properties;
+        this.excludeTransactionTypes = excludeTransactionTypes;
+        this.billTypes = billTypes;
+    }
+
+    public Setting() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    public List<Long> getExcludeTransactionTypes() {
+        return excludeTransactionTypes;
+    }
+
+    public void setExcludeTransactionTypes(List<Long> excludeTransactionTypes) {
+        this.excludeTransactionTypes = excludeTransactionTypes;
+    }
+
+    public List<Long> getBillTypes() {
+        return billTypes;
+    }
+
+    public void setBillTypes(List<Long> billTypes) {
+        this.billTypes = billTypes;
     }
 }

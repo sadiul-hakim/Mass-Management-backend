@@ -1,20 +1,25 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.UserStatus;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserStatusRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserStatusService {
     private final UserStatusRepo userStatusRepo;
     private final UserRepo userRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(UserStatusService.class);
+
+    public UserStatusService(UserStatusRepo userStatusRepo, UserRepo userRepo) {
+        this.userStatusRepo = userStatusRepo;
+        this.userRepo = userRepo;
+    }
 
     public UserStatus save(UserStatus userStatus) {
         log.info("Saving user role : {}", userStatus);

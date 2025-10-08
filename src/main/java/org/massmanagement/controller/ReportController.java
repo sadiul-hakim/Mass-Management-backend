@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.service.ReportService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("/report/v1")
-@RequiredArgsConstructor
 class ReportController {
     private final ReportService reportService;
+
+    ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     @GetMapping(value = "/generate", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generate() {

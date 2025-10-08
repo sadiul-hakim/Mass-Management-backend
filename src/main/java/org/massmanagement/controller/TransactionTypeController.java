@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.model.TransactionType;
 import org.massmanagement.service.TransactionTypeService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/transaction-type/v1")
-@RequiredArgsConstructor
 class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
+
+    TransactionTypeController(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody TransactionType transactionType) {

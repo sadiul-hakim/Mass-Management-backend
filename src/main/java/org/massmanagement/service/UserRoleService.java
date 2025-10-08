@@ -1,21 +1,26 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.RoleDTO;
 import org.massmanagement.model.UserRole;
 import org.massmanagement.repository.UserRepo;
 import org.massmanagement.repository.UserRoleRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserRoleService {
     private final UserRoleRepo userRoleRepo;
     private final UserRepo userRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(UserRoleService.class);
+
+    public UserRoleService(UserRoleRepo userRoleRepo, UserRepo userRepo) {
+        this.userRoleRepo = userRoleRepo;
+        this.userRepo = userRepo;
+    }
 
     public RoleDTO save(UserRole userRole) {
         log.info("Saving user role : {}", userRole);

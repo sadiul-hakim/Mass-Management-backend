@@ -4,19 +4,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
 
-@Slf4j
 @Component
 @Converter
-@RequiredArgsConstructor
 public class ReportConverter implements AttributeConverter<Map<String, Object>, String> {
     private final ObjectMapper mapper;
+
+    private static final Logger log = LoggerFactory.getLogger(ReportConverter.class);
+
+    public ReportConverter(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public String convertToDatabaseColumn(Map<String, Object> report) {

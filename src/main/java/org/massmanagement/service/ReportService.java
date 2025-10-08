@@ -1,7 +1,5 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.dto.MealDTO;
 import org.massmanagement.dto.UserDTO;
@@ -9,15 +7,15 @@ import org.massmanagement.model.Period;
 import org.massmanagement.model.Setting;
 import org.massmanagement.util.DateFormatter;
 import org.massmanagement.util.SettingParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class ReportService {
     private final CostService costService;
     private final PeriodService periodService;
@@ -25,6 +23,18 @@ public class ReportService {
     private final UserService userService;
     private final IncomeService incomeService;
     private final SettingService settingService;
+
+    private static final Logger log = LoggerFactory.getLogger(ReportService.class);
+
+    public ReportService(CostService costService, PeriodService periodService, MealService mealService,
+                         UserService userService, IncomeService incomeService, SettingService settingService) {
+        this.costService = costService;
+        this.periodService = periodService;
+        this.mealService = mealService;
+        this.userService = userService;
+        this.incomeService = incomeService;
+        this.settingService = settingService;
+    }
 
     public Map<String, Object> generateReport() {
         log.info("Generating report.");

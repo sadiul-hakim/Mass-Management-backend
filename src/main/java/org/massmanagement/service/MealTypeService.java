@@ -1,21 +1,26 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.model.MealType;
 import org.massmanagement.repository.MealRepo;
 import org.massmanagement.repository.MealTypeRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MealTypeService {
     private final MealTypeRepo mealTypeRepo;
     private final MealRepo mealRepo;
+
+    private static final Logger log = LoggerFactory.getLogger(MealTypeService.class);
+
+    public MealTypeService(MealTypeRepo mealTypeRepo, MealRepo mealRepo) {
+        this.mealTypeRepo = mealTypeRepo;
+        this.mealRepo = mealRepo;
+    }
 
     public MealType save(MealType mealType) {
         log.info("Saving Meal Type : {}", mealType);

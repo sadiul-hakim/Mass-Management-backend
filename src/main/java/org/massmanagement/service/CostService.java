@@ -1,21 +1,26 @@
 package org.massmanagement.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.massmanagement.dto.CostDTO;
 import org.massmanagement.model.Cost;
 import org.massmanagement.repository.CostRepo;
 import org.massmanagement.util.DateFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class CostService {
     private final CostRepo costRepo;
     private final TransactionTypeService transactionTypeService;
+
+    private static final Logger log = LoggerFactory.getLogger(CostService.class);
+
+    public CostService(CostRepo costRepo, TransactionTypeService transactionTypeService) {
+        this.costRepo = costRepo;
+        this.transactionTypeService = transactionTypeService;
+    }
 
     public Cost save(Cost cost) {
         log.info("Saving cost : {}", cost);

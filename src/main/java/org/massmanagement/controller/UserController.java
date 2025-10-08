@@ -1,6 +1,5 @@
 package org.massmanagement.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.massmanagement.dto.ChangePasswordDTO;
 import org.massmanagement.dto.UserUpdateDTO;
 import org.massmanagement.model.User;
@@ -14,9 +13,12 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/user/v1")
-@RequiredArgsConstructor
 class UserController {
     private final UserService userService;
+
+    UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody User user) {
